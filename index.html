@@ -1,0 +1,989 @@
+<title>Consolidado a Análisis</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#EFF1F3; --surface:#FFFFFF; --sunk:#E6E9EC;
+  --ink:#141A20; --ink2:#4C5763; --muted:#828E9A; --rule:#D5DAE0; --rule2:#E7EAEE;
+  --accent:#1D4E6B; --accent-ink:#FFFFFF; --accent-soft:#DCE7EE;
+  --pos:#2C6B4B; --mid:#8A6A16; --neg:#9A3B2F; --neg-soft:#F6E4E1;
+  --h0:transparent; --h1:#F3E2DE; --h2:#E4BBB3; --h3:#CE8C81; --h4:#B05B4D;
+  --hink1:#6B4038; --hink2:#5B2F27; --hink3:#3B1C16; --hink4:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,26,32,.06),0 8px 24px -16px rgba(20,26,32,.28);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
+  --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
+  --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
+  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F;
+  --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
+  --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
+  --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
+  --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
+  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F;
+  --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
+  --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-size:17.5px;line-height:1.6;
+ font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
+ line-height:1.1;margin:.3em 0 .25em;letter-spacing:-.015em;text-wrap:balance}
+h2{font-family:"IBM Plex Serif",Georgia,serif;font-size:1.3rem;font-weight:600;margin:0 0 4px;letter-spacing:-.01em}
+h3{font-size:.95rem;font-weight:600;margin:26px 0 8px}
+h4{margin:0;font-size:1.05rem;font-weight:600}
+p{color:var(--ink2);margin:.6em 0;max-width:70ch}
+.mut{color:var(--muted)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pos{color:var(--pos)} .mid{color:var(--mid)} .neg{color:var(--neg)}
+
+/* --- pantalla de carga --- */
+#drop{margin:48px 0;border:1px dashed var(--rule);border-radius:4px;background:var(--surface);
+ padding:52px 28px;text-align:center;box-shadow:var(--shadow);transition:border-color .15s,background .15s}
+#drop.over{border-color:var(--accent);background:var(--accent-soft)}
+#drop h1{margin-top:.1em}
+#drop p{margin-left:auto;margin-right:auto}
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:34px auto 6px;max-width:820px;text-align:left}
+.paso{border-top:2px solid var(--accent);padding-top:10px}
+.paso b{display:block;font-size:.9rem}
+.paso span{font-size:.83rem;color:var(--ink2)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:3px;
+ padding:12px 26px;font-weight:500;font-size:1rem}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-soft);filter:none}
+.btn.sm{padding:8px 15px;font-size:.88rem}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.msg{margin:18px 0;padding:12px 16px;border-radius:3px;background:var(--surface);border:1px solid var(--rule);
+ font-size:.9rem;color:var(--ink2)}
+.msg.err{border-left:3px solid var(--neg);color:var(--neg)}
+
+/* --- cabecera de la app --- */
+.appTop{border-bottom:1px solid var(--rule);padding:28px 0 18px;margin-bottom:22px;
+ display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;justify-content:space-between}
+.appTop .t{min-width:240px}
+#nombreArchivo{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--muted);word-break:break-all}
+.controles{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--ink2)}
+.controles label{display:flex;gap:7px;align-items:center;white-space:nowrap}
+input[type=number],input[type=search]{font:inherit;font-family:"IBM Plex Mono",monospace;font-size:.85rem;
+ background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:3px;padding:5px 8px}
+input[type=number]{width:66px;text-align:right}
+input[type=search]{width:190px;font-family:inherit}
+input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px}
+
+.note{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+ border-radius:3px;padding:14px 18px;margin:16px 0;box-shadow:var(--shadow)}
+.note .h{font-family:"IBM Plex Mono",monospace;font-size:.67rem;letter-spacing:.11em;text-transform:uppercase;
+ color:var(--accent);margin-bottom:4px}
+.note p{margin:.25em 0;font-size:.9rem}
+
+/* --- panel de opciones --- */
+.opcFila{display:flex;gap:26px;flex-wrap:wrap;align-items:center;padding-bottom:14px;margin-bottom:14px;
+ border-bottom:1px solid var(--rule2);font-size:.95rem}
+.opcFila label{display:flex;gap:9px;align-items:center}
+#panelOpciones{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:16px 18px;
+ margin:12px 0 4px;box-shadow:var(--shadow)}
+#pesos{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.campoTit{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+ color:var(--ink2);margin-bottom:7px;border-bottom:1px solid var(--rule2);padding-bottom:5px;
+ display:flex;justify-content:space-between;gap:8px}
+.peso{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;padding:2px 0}
+.peso span{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peso.fix span{color:var(--ink);font-weight:500}
+.peso.fix input{border-color:var(--accent);background:var(--accent-soft)}
+
+/* --- tabs --- */
+.tabbar{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--rule);margin:26px 0 20px}
+.tabbar button{background:none;border:0;border-bottom:2px solid transparent;padding:11px 16px;
+ font-size:.95rem;color:var(--ink2);margin-bottom:-1px}
+.tabbar button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:500}
+.tabbar button:hover{color:var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--surface);border:1px solid var(--rule);border-radius:99px;padding:4px 13px;font-size:.8rem;color:var(--ink2)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+
+/* --- KPIs --- */
+#kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin:4px 0 20px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:15px 17px;box-shadow:var(--shadow)}
+.kpi .k{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-family:"IBM Plex Serif",Georgia,serif;font-size:2rem;line-height:1.12;margin-top:5px;
+ font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .v.warn{color:var(--neg)}
+.kpi .v .de{font-size:.95rem;color:var(--muted);font-family:"IBM Plex Sans",sans-serif}
+.kpi .s{font-size:.8rem;color:var(--ink2);margin-top:3px;font-variant-numeric:tabular-nums}
+
+/* --- tablas --- */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+ box-shadow:var(--shadow);margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+caption{text-align:left;padding:13px 16px 0;font-size:.8rem;color:var(--muted)}
+thead th{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:.64rem;letter-spacing:.09em;
+ text-transform:uppercase;color:var(--muted);padding:11px 9px;border-bottom:1px solid var(--rule);
+ text-align:right;white-space:nowrap}
+thead th.lbl{text-align:left}
+thead tr.sup th{border-bottom:0;padding-bottom:2px;text-align:center;color:var(--accent)}
+thead tr.sup th.spacer{border:0}
+tbody th{text-align:left;font-weight:500;padding:6px 9px;color:var(--ink);border-top:1px solid var(--rule2)}
+tbody th.sub{font-weight:400;color:var(--ink2);padding-left:20px}
+td{padding:6px 9px;border-top:1px solid var(--rule2)}
+tr.grp th{background:var(--sunk);font-family:"IBM Plex Mono",monospace;font-size:.63rem;letter-spacing:.11em;
+ text-transform:uppercase;color:var(--ink2);padding:7px 9px;border-top:1px solid var(--rule)}
+.heat{border-left:1px solid var(--surface)}
+.r0{background:var(--h0);color:var(--muted)} .r1{background:var(--h1);color:var(--hink1)}
+.r2{background:var(--h2);color:var(--hink2)} .r3{background:var(--h3);color:var(--hink3)}
+.r4{background:var(--h4);color:var(--hink4);font-weight:600}
+
+/* --- fichas de estudiante --- */
+.barraEst{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:6px 0 14px;font-size:.85rem;color:var(--ink2)}
+#contEst{display:grid;gap:9px}
+.est{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--rule);
+ border-radius:3px;padding:12px 15px;box-shadow:var(--shadow)}
+.est.alerta{border-left-color:var(--neg)}
+.estCab{display:flex;justify-content:space-between;gap:14px;align-items:baseline;flex-wrap:wrap}
+.estNums{font-size:.92rem;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.estNums b{font-size:.95rem}
+.estNums .sep{display:inline-block;width:1px;height:11px;background:var(--rule);margin:0 8px;vertical-align:-1px}
+.linea{display:flex;gap:12px;align-items:baseline;margin-top:8px;flex-wrap:wrap}
+.linea.ok{margin-top:6px;font-size:.83rem;color:var(--muted)}
+.et{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;
+ color:var(--muted);min-width:132px}
+.tag{background:var(--sunk);border-radius:3px;padding:3px 10px;font-size:.87rem;color:var(--ink2)}
+.tag b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tag.bad{background:var(--neg-soft);color:var(--neg)}
+.tag.bad b{color:var(--neg)}
+
+/* --- revisión y descargas --- */
+.rev{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:13px 16px;
+ margin-bottom:9px;box-shadow:var(--shadow);font-size:.87rem;color:var(--ink2)}
+.revTit{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+ color:var(--accent);margin-bottom:5px}
+.dls{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px;margin-top:14px}
+.dl{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:15px 17px;box-shadow:var(--shadow);
+ display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.dl b{font-size:.92rem}
+.dl span{font-size:.83rem;color:var(--ink2);flex:1}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
+ padding:10px 18px;border-radius:3px;font-size:.85rem;box-shadow:0 8px 30px -8px rgba(0,0,0,.5);z-index:20;max-width:min(92vw,560px)}
+footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-size:.78rem;color:var(--muted);max-width:74ch}
+@media (max-width:620px){.wrap{padding:0 14px 70px}.et{min-width:100%}}
+@media print{
+  :root{--paper:#fff;--surface:#fff;--sunk:#f2f2f2;--ink:#000;--ink2:#333;--muted:#666;--rule:#bbb;--rule2:#ddd}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tabbar,.controles,#panelOpciones,.barraEst,#toast,#drop,.dls,footer .noprint,#btnImprimir{display:none!important}
+  .panel[hidden]{display:none!important}
+  .appTop{border-bottom:1px solid #000;margin-bottom:12px}
+  .est{break-inside:avoid;page-break-inside:avoid;box-shadow:none;border-left-width:2px}
+  .kpi,.rev,.tablewrap{box-shadow:none}
+  .wrap{max-width:100%;padding:0}
+  a{text-decoration:none;color:#000}
+}
+</style>
+
+<div class="wrap">
+
+<div id="drop">
+  <div class="eyebrow">Consolidado de notas por periodo</div>
+  <h1>Análisis del consolidado</h1>
+  <p style="font-size:1.05rem">Abrí acá el archivo de Excel del curso y la página arma sola el análisis:
+  quién va perdiendo qué, en qué asignatura y con qué nota.</p>
+  <p><button class="btn" id="btnElegir">Elegir archivo .xlsx</button>
+     <input type="file" id="file" accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></p>
+  <p class="mut" style="font-size:.92rem">También podés arrastrar el archivo hasta este recuadro.<br>El archivo se lee dentro de tu computador: no se sube a internet ni queda guardado en ningún lado.</p>
+  <div class="pasos">
+    <div class="paso"><b>1 · Lee el archivo</b><span>Toma todas las hojas de periodo y deja por fuera las que están sin diligenciar.</span></div>
+    <div class="paso"><b>2 · Corrige la ponderación</b><span>Ciencias 0,50 · PreFísica 0,17 · Tecnología 0,33, y vuelve a calcular la nota de cada área.</span></div>
+    <div class="paso"><b>3 · Muestra lo perdido</b><span>Estudiante por estudiante: las áreas y las asignaturas que quedan por debajo de 60.</span></div>
+    <div class="paso"><b>4 · Se lleva a Excel</b><span>Listas descargables para actas, o directo a la impresora.</span></div>
+  </div>
+</div>
+
+<div id="msg" class="msg" hidden></div>
+
+<div id="app" hidden>
+  <div class="appTop">
+    <div class="t">
+      <h2 id="subtitulo"></h2>
+      <div id="nombreArchivo"></div>
+    </div>
+    <div class="controles">
+      <button class="btn ghost sm" id="btnOtro">Abrir otro archivo</button>
+      <button class="btn ghost sm" id="toggleOpciones" aria-expanded="false">Opciones avanzadas</button>
+    </div>
+  </div>
+
+  <div id="avisoPesos" class="note" hidden></div>
+
+  <div id="panelOpciones" hidden>
+    <div class="opcFila">
+      <label>Nota mínima para aprobar <input type="number" id="umbral" value="60" min="1" max="100" step="1"></label>
+      <label><input type="checkbox" id="ceroSinNota"> Tratar los 0 como «sin nota» en vez de como calificación</label>
+    </div>
+    <p style="font-size:.9rem">Peso de cada asignatura dentro de su área. Los resaltados son los que se
+    corrigieron al abrir el archivo. Si cambiás alguno, todo se recalcula al instante.</p>
+    <div id="pesos"></div>
+  </div>
+
+  <div class="tabbar">
+    <button data-tab="resumen" class="on">Resumen del curso</button>
+    <button data-tab="estudiantes">Qué pierde cada estudiante</button>
+    <button data-tab="asignaturas">Promedios por asignatura</button>
+    <button data-tab="revision">Revisión del archivo</button>
+    <button data-tab="descargas">Descargar e imprimir</button>
+  </div>
+
+  <section class="panel" id="panel-resumen">
+    <div id="kpis"></div>
+    <div class="tablewrap" id="tablaAreas"></div>
+    <p class="mut" style="font-size:.82rem">El color de la columna «% pierde» va de claro a intenso según cuántos
+    estudiantes están por debajo de la nota mínima.</p>
+  </section>
+
+  <section class="panel" id="panel-estudiantes" hidden>
+    <div class="barraEst">
+      <div class="chips" id="tabsPeriodo"></div>
+      <label><input type="checkbox" id="soloPierden"> Solo quienes pierden algo</label>
+      <input type="search" id="buscar" placeholder="Buscar estudiante…" aria-label="Buscar estudiante">
+      <span class="mut" id="contadorEst"></span>
+      <button class="btn ghost sm" id="btnImprimir">Imprimir esta lista</button>
+    </div>
+    <div id="contEst"></div>
+  </section>
+
+  <section class="panel" id="panel-asignaturas" hidden>
+    <div class="tablewrap" id="tablaAsig"></div>
+  </section>
+
+  <section class="panel" id="panel-revision" hidden>
+    <p>Controles automáticos sobre el archivo cargado. No cambian los resultados: señalan lo que conviene verificar
+    antes de llevar estas cifras a comisión de evaluación.</p>
+    <div id="revision"></div>
+  </section>
+
+  <section class="panel" id="panel-descargas" hidden>
+    <p>Los archivos se descargan en formato CSV, que Excel abre con doble clic. Si lo que necesitás es la lista
+    en papel, andá a «Qué pierde cada estudiante» y usá el botón <b>Imprimir esta lista</b>: sale una hoja por
+    periodo con cada estudiante y lo que va perdiendo.</p>
+    <div class="dls">
+      <div class="dl"><b>Áreas y asignaturas perdidas</b>
+        <span>Una fila por estudiante y periodo, con el detalle de qué pierde y con qué nota. Es el listado para actas.</span>
+        <button class="btn sm" data-export="perdidas">Descargar CSV</button></div>
+      <div class="dl"><b>Consolidado por estudiante</b>
+        <span>Promedio y número de áreas perdidas en cada periodo, más el promedio global y la variación.</span>
+        <button class="btn sm" data-export="consolidado">Descargar CSV</button></div>
+      <div class="dl"><b>Resumen por área y asignatura</b>
+        <span>Promedio y porcentaje de pérdida de cada área y asignatura en todos los periodos.</span>
+        <button class="btn sm" data-export="resumen">Descargar CSV</button></div>
+      <div class="dl"><b>Detalle nota por nota</b>
+        <span>Formato largo: estudiante, periodo, asignatura, nota, peso aplicado y estado. Para tablas dinámicas.</span>
+        <button class="btn sm" data-export="detalle">Descargar CSV</button></div>
+    </div>
+  </section>
+
+  <footer>
+    Las notas de área se recalculan como suma ponderada de las asignaturas con los pesos vigentes; si activás
+    «tratar 0 como sin nota», esas asignaturas se excluyen y el peso se reparte entre las demás. Nada se envía a
+    ningún servidor: el archivo se lee y se procesa dentro de tu navegador.
+  </footer>
+</div>
+
+<div id="toast" hidden></div>
+</div>
+
+<script>
+/* ============================================================================
+   Motor de análisis de consolidados de notas.
+   Sin dependencias: descomprime el .xlsx con DecompressionStream, parsea el XML
+   con expresiones regulares y calcula áreas, pérdidas y controles de calidad.
+   ==========================================================================*/
+
+/* ---------- ZIP ---------- */
+
+async function unzip(buf) {
+  const dv = new DataView(buf), u8 = new Uint8Array(buf);
+  // End of central directory
+  let eocd = -1;
+  for (let i = u8.length - 22; i >= 0 && i > u8.length - 66000; i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('El archivo no parece un .xlsx válido (no se encontró el índice del ZIP).');
+  const count = dv.getUint16(eocd + 10, true);
+  let off = dv.getUint32(eocd + 16, true);
+  const files = {};
+  for (let n = 0; n < count; n++) {
+    if (dv.getUint32(off, true) !== 0x02014b50) break;
+    const method = dv.getUint16(off + 10, true);
+    const csize = dv.getUint32(off + 20, true);
+    const nameLen = dv.getUint16(off + 28, true);
+    const extraLen = dv.getUint16(off + 30, true);
+    const cmtLen = dv.getUint16(off + 32, true);
+    const lho = dv.getUint32(off + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(off + 46, off + 46 + nameLen));
+    // cabecera local: los tamaños de nombre/extra pueden diferir de los del índice
+    const lnLen = dv.getUint16(lho + 26, true), leLen = dv.getUint16(lho + 28, true);
+    const start = lho + 30 + lnLen + leLen;
+    files[name] = { method, bytes: u8.subarray(start, start + csize) };
+    off += 46 + nameLen + extraLen + cmtLen;
+  }
+  const out = {};
+  for (const [name, f] of Object.entries(files)) {
+    if (!/\.(xml|rels)$/i.test(name)) continue;
+    if (f.method === 0) { out[name] = new TextDecoder().decode(f.bytes); continue; }
+    if (f.method !== 8) continue;
+    if (typeof DecompressionStream !== 'function')
+      throw new Error('Este navegador no puede descomprimir el archivo. Usá Chrome, Edge o Safari actualizados.');
+    const stream = new Blob([f.bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    out[name] = new TextDecoder().decode(await new Response(stream).arrayBuffer());
+  }
+  return out;
+}
+
+/* ---------- XML ---------- */
+
+const ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+function dec(s) {
+  return s.replace(/&(#x?[0-9a-fA-F]+|amp|lt|gt|quot|apos);/g, (m, e) =>
+    e[0] === '#' ? String.fromCodePoint(parseInt(e[1] === 'x' ? e.slice(2) : e.slice(1), e[1] === 'x' ? 16 : 10)) : ENT[e]);
+}
+function colToIdx(ref) {
+  let n = 0;
+  for (let i = 0; i < ref.length; i++) {
+    const c = ref.charCodeAt(i);
+    if (c < 65 || c > 90) break;
+    n = n * 26 + (c - 64);
+  }
+  return n - 1;
+}
+
+function sharedStrings(xml) {
+  if (!xml) return [];
+  return (xml.match(/<si>[\s\S]*?<\/si>|<si\/>/g) || []).map(si => {
+    const noPh = si.replace(/<rPh[\s\S]*?<\/rPh>/g, '');
+    return (noPh.match(/<t[^>]*>[\s\S]*?<\/t>/g) || [])
+      .map(t => dec(t.replace(/^<t[^>]*>/, '').replace(/<\/t>$/, ''))).join('');
+  });
+}
+
+/** Devuelve la hoja como matriz de celdas (string | number | null). */
+function sheetGrid(xml, sst) {
+  const grid = [];
+  const rows = xml.match(/<row[^>]*>[\s\S]*?<\/row>|<row[^>]*\/>/g) || [];
+  for (const row of rows) {
+    const rn = +(/\br="(\d+)"/.exec(row) || [0, 0])[1];
+    const cells = [];
+    const re = /<c\b([^>]*)(?:\/>|>([\s\S]*?)<\/c>)/g;
+    let m;
+    while ((m = re.exec(row))) {
+      const attrs = m[1], body = m[2] || '';
+      const ref = (/\br="([A-Z]+)\d+"/.exec(attrs) || [])[1];
+      if (!ref) continue;
+      const type = (/\bt="([^"]+)"/.exec(attrs) || [])[1] || 'n';
+      let val = null;
+      if (type === 'inlineStr') {
+        val = (body.match(/<t[^>]*>[\s\S]*?<\/t>/g) || [])
+          .map(t => dec(t.replace(/^<t[^>]*>/, '').replace(/<\/t>$/, ''))).join('') || null;
+      } else {
+        const v = /<v>([\s\S]*?)<\/v>/.exec(body);
+        if (v) {
+          const raw = dec(v[1]);
+          if (type === 's') val = sst[+raw] ?? null;
+          else if (type === 'str' || type === 'e') val = raw;
+          else if (type === 'b') val = raw === '1' ? 1 : 0;
+          else val = raw === '' ? null : Number(raw);
+        }
+      }
+      cells[colToIdx(ref)] = val === '' ? null : val;
+    }
+    grid[rn - 1] = cells;
+  }
+  return grid;
+}
+
+async function readWorkbook(buf) {
+  const z = await unzip(buf);
+  const sst = sharedStrings(z['xl/sharedStrings.xml']);
+  const rels = {};
+  for (const m of (z['xl/_rels/workbook.xml.rels'] || '').matchAll(/<Relationship\b[^>]*>/g)) {
+    const id = (/Id="([^"]+)"/.exec(m[0]) || [])[1];
+    let tgt = (/Target="([^"]+)"/.exec(m[0]) || [])[1];
+    if (id && tgt) rels[id] = 'xl/' + tgt.replace(/^\.?\//, '').replace(/^xl\//, '');
+  }
+  const sheets = [];
+  for (const m of (z['xl/workbook.xml'] || '').matchAll(/<sheet\b[^>]*>/g)) {
+    const name = dec((/name="([^"]*)"/.exec(m[0]) || [])[1] || '');
+    const rid = (/r:id="([^"]+)"/.exec(m[0]) || [])[1];
+    const path = rels[rid];
+    if (path && z[path]) sheets.push({ name, grid: sheetGrid(z[path], sst) });
+  }
+  if (!sheets.length) throw new Error('No se encontraron hojas con datos en el archivo.');
+  return sheets;
+}
+
+/* ---------- estructura de la hoja ---------- */
+
+const norm = s => (s == null ? '' : String(s)).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const clean = s => (s == null ? '' : String(s)).replace(/\s+/g, ' ').trim();
+const isNum = v => typeof v === 'number' && isFinite(v);
+
+/** Pesos oficiales del campo de ciencias (la data cruda llega intercambiada). */
+const REGLAS_PESO = [
+  { campo: /ciencia/, asignatura: /^ciencias/, peso: 0.50 },
+  { campo: /ciencia/, asignatura: /(prefisica|prequimica|pre fisica|pre quimica)/, peso: 0.17 },
+  { campo: /ciencia/, asignatura: /tecnolog/, peso: 0.33 },
+];
+
+/**
+ * Lee la estructura: fila de campos, fila de asignaturas, fila de pesos,
+ * columnas de área y filas de estudiantes. No asume posiciones fijas.
+ */
+/** Ubica la fila de pesos: la primera fila donde todos los números son ≤1 y hay al menos un 1 exacto. */
+function filaDePesos(grid) {
+  for (let r = 0; r < Math.min(8, grid.length); r++) {
+    const nums = (grid[r] || []).filter(isNum);
+    if (nums.length >= 4 && nums.every(v => v > 0 && v <= 1) && nums.some(v => Math.abs(v - 1) < 1e-9)) return r;
+  }
+  return 2;
+}
+
+function estructura(grid) {
+  const filaPeso = filaDePesos(grid), filaAsig = filaPeso - 1, filaCampo = Math.max(0, filaPeso - 2);
+  if (filaAsig < 0) return { campos: [], asigs: [], estudiantes: [], colNombre: 1 };
+  const campos = [], asigs = [];
+  let campoActual = '';
+  const ancho = Math.max(...grid.slice(0, 4).map(r => (r ? r.length : 0)), 0);
+
+  for (let c = 0; c < ancho; c++) {
+    const h1 = clean(grid[filaCampo]?.[c]);
+    const h2 = clean(grid[filaAsig]?.[c]);
+    const peso = grid[filaPeso]?.[c];
+    if (h1 && !/notal? del area/i.test(norm(h1)) && !/^n.?$/i.test(h1) && !/nombre/i.test(h1) && !/areas perdidas/i.test(norm(h1)))
+      campoActual = h1;
+    const esArea = /notal? del area/.test(norm(h1)) || (!h2 && isNum(peso) && Math.abs(peso - 1) < 1e-9 && campoActual);
+    if (esArea && campoActual) {
+      campos.push({ nombre: campoActual, col: c, asigs: [] });
+    } else if (h2 && isNum(peso) && campoActual) {
+      asigs.push({ nombre: h2, campo: campoActual, col: c, pesoOrig: peso });
+    }
+  }
+  for (const a of asigs) {
+    const campo = campos.find(k => k.nombre === a.campo && k.col > a.col);
+    if (campo) campo.asigs.push(a);
+  }
+  const conAsigs = campos.filter(k => k.asigs.length);
+
+  // estudiantes: filas con nombre en la columna de "NOMBRE DE ESTUDIANTE"
+  let colNombre = 1;
+  for (let c = 0; c < ancho; c++) if (/nombre/.test(norm(grid[filaCampo]?.[c]))) { colNombre = c; break; }
+  const estudiantes = [];
+  for (let r = filaPeso + 1; r < grid.length; r++) {
+    const nom = clean(grid[r]?.[colNombre]);
+    if (!nom) continue;
+    if (/reprueban|no aprobacion|promedio|total/.test(norm(nom))) break;
+    estudiantes.push({ nombre: nom, fila: r });
+  }
+  return { campos: conAsigs, asigs, estudiantes, colNombre };
+}
+
+/** Aplica las reglas de peso oficiales y reporta qué cambió. */
+function pesosCorregidos(asigs) {
+  const cambios = [];
+  const pesos = {};
+  for (const a of asigs) {
+    const regla = REGLAS_PESO.find(r => r.campo.test(norm(a.campo)) && r.asignatura.test(norm(a.nombre)));
+    const nuevo = regla ? regla.peso : a.pesoOrig;
+    pesos[a.col] = nuevo;
+    if (regla && Math.abs(nuevo - a.pesoOrig) > 1e-9)
+      cambios.push({ campo: a.campo, asignatura: a.nombre, de: a.pesoOrig, a: nuevo });
+  }
+  return { pesos, cambios };
+}
+
+/* ---------- análisis ---------- */
+
+/**
+ * @param {Array} sheets  hojas del libro
+ * @param {Object} opts   {umbral, ceroSinNota, pesos: {clave->peso}}
+ */
+function analizar(sheets, opts = {}) {
+  const umbral = opts.umbral ?? 60;
+  const ceroSinNota = !!opts.ceroSinNota;
+  const periodos = [], vacias = [];
+  let estructuraRef = null, cambiosPeso = [], pesosPorClave = null;
+
+  for (const sh of sheets) {
+    const est = estructura(sh.grid);
+    if (!est.campos.length || !est.estudiantes.length) { vacias.push({ hoja: sh.name, motivo: 'sin estructura reconocible' }); continue; }
+    const notas = est.asigs.flatMap(a => est.estudiantes.map(e => sh.grid[e.fila]?.[a.col])).filter(isNum);
+    const diligenciadas = notas.filter(v => v !== 0).length / (notas.length || 1);
+    if (diligenciadas < 0.2) {
+      vacias.push({ hoja: sh.name, motivo: diligenciadas === 0 ? 'plantilla en ceros, sin diligenciar'
+        : `plantilla casi vacía: solo ${(diligenciadas * 100).toFixed(0)} % de las notas tienen valor` });
+      continue;
+    }
+    if (!estructuraRef) estructuraRef = est;
+    periodos.push({ hoja: sh.name, grid: sh.grid, est });
+  }
+  if (!periodos.length) throw new Error('Ninguna hoja del archivo tiene notas cargadas.');
+
+  // pesos: los del usuario mandan; si no, las reglas oficiales sobre la primera hoja con datos
+  const base = pesosCorregidos(periodos[0].est.asigs);
+  cambiosPeso = base.cambios;
+  pesosPorClave = {};
+  for (const a of periodos[0].est.asigs) {
+    const k = a.campo + '||' + a.nombre;
+    pesosPorClave[k] = opts.pesos && k in opts.pesos ? opts.pesos[k] : base.pesos[a.col];
+  }
+
+  const salida = { periodos: [], estudiantes: [], asignaturas: [], campos: [], cambiosPeso, vacias, umbral, pesosPorClave, avisos: [] };
+  const nombresEst = periodos[0].est.estudiantes.map(e => e.nombre);
+  salida.campos = periodos[0].est.campos.map(k => ({ nombre: k.nombre, asigs: k.asigs.map(a => a.nombre) }));
+
+  for (const p of periodos) {
+    const { grid, est } = p;
+    const per = { hoja: p.hoja, filas: [], asig: [], campo: [], ceros: 0, duplicadas: [], sumaPesos: [] };
+
+    // control: pesos que no suman 1 por campo
+    for (const k of est.campos) {
+      const s = k.asigs.reduce((t, a) => t + (pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig), 0);
+      if (Math.abs(s - 1) > 0.005) per.sumaPesos.push({ campo: k.nombre, suma: s });
+    }
+    // control: columnas de asignatura que traen la misma nota (copias de columna)
+    const cols = est.asigs.map(a => ({ a, v: est.estudiantes.map(e => grid[e.fila]?.[a.col]) }));
+    const total = est.estudiantes.length;
+    const casiIgual = (A, B) => total > 3 && A.filter((v, n) => isNum(v) && v === B[n]).length >= total - 1;
+    const usados = new Set();
+    for (let i = 0; i < cols.length; i++) {
+      if (usados.has(i)) continue;
+      const grupo = [i];
+      for (let j = i + 1; j < cols.length; j++)
+        if (!usados.has(j) && casiIgual(cols[i].v, cols[j].v)) { grupo.push(j); usados.add(j); }
+      if (grupo.length > 1) {
+        usados.add(i);
+        const iguales = Math.min(...grupo.slice(1).map(j => cols[i].v.filter((v, n) => isNum(v) && v === cols[j].v[n]).length));
+        per.duplicadas.push({ asignaturas: grupo.map(j => cols[j].a.nombre), campos: [...new Set(grupo.map(j => cols[j].a.campo))], iguales, total });
+      }
+    }
+
+    for (const e of est.estudiantes) {
+      const fila = { nombre: e.nombre, campos: [], asigsPerdidas: [], camposPerdidos: [] };
+      for (const k of est.campos) {
+        let acc = 0, pesoUtil = 0;
+        const detalle = [];
+        for (const a of k.asigs) {
+          const w = pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig;
+          const v = grid[e.fila]?.[a.col];
+          const nota = isNum(v) ? v : null;
+          const omitida = nota === null || (ceroSinNota && nota === 0);
+          if (nota === 0) per.ceros++;
+          if (!omitida) { acc += nota * w; pesoUtil += w; }
+          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pierde: nota !== null && nota < umbral && !omitida });
+          if (nota !== null && nota < umbral && !omitida) fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
+        }
+        const area = pesoUtil > 0 ? acc / pesoUtil : null;
+        const areaArchivo = isNum(grid[e.fila]?.[k.col]) ? grid[e.fila][k.col] : null;
+        fila.campos.push({ campo: k.nombre, area, areaArchivo, detalle, pierde: area !== null && area < umbral });
+        if (area !== null && area < umbral) fila.camposPerdidos.push({ campo: k.nombre, nota: area });
+      }
+      const areas = fila.campos.map(c => c.area).filter(v => v !== null);
+      fila.promedio = areas.length ? areas.reduce((s, v) => s + v, 0) / areas.length : null;
+      per.filas.push(fila);
+    }
+
+    const n = per.filas.length;
+    per.promedio = prom(per.filas.map(f => f.promedio));
+    per.pctAreas = pct(per.filas.flatMap(f => f.campos.map(c => c.pierde)));
+    per.sinPerder = per.filas.filter(f => f.camposPerdidos.length === 0).length;
+    per.tresOMas = per.filas.filter(f => f.camposPerdidos.length >= 3).length;
+    per.total = n;
+    per.campo = est.campos.map(k => {
+      const vals = per.filas.map(f => f.campos.find(c => c.campo === k.nombre)).filter(Boolean);
+      return { nombre: k.nombre, promedio: prom(vals.map(v => v.area)), pct: pct(vals.map(v => v.pierde)) };
+    });
+    per.asig = est.asigs.map(a => {
+      const vals = per.filas.flatMap(f => f.campos.flatMap(c => c.detalle.filter(d => d.asignatura === a.nombre && d.campo === a.campo)));
+      return {
+        nombre: a.nombre, campo: a.campo, peso: pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig,
+        promedio: prom(vals.filter(v => !v.omitida).map(v => v.nota)),
+        pct: pct(vals.filter(v => !v.omitida).map(v => v.pierde)),
+        pierden: vals.filter(v => v.pierde).length, ceros: vals.filter(v => v.nota === 0).length,
+      };
+    });
+    salida.periodos.push(per);
+  }
+
+  // consolidado por estudiante
+  salida.estudiantes = nombresEst.map(nom => {
+    const porPeriodo = salida.periodos.map(p => p.filas.find(f => f.nombre === nom) || null);
+    const proms = porPeriodo.map(f => (f ? f.promedio : null));
+    const validos = proms.filter(v => v !== null);
+    const primero = validos[0] ?? null, ultimo = validos[validos.length - 1] ?? null;
+    return {
+      nombre: nom, porPeriodo, promedios: proms,
+      global: validos.length ? validos.reduce((s, v) => s + v, 0) / validos.length : null,
+      delta: primero !== null && ultimo !== null ? ultimo - primero : null,
+      perdidasPorPeriodo: porPeriodo.map(f => (f ? f.camposPerdidos.length : 0)),
+      totalAsigsPerdidas: porPeriodo.reduce((s, f) => s + (f ? f.asigsPerdidas.length : 0), 0),
+    };
+  }).sort((a, b) => (b.global ?? -1) - (a.global ?? -1));
+
+  return salida;
+}
+
+const prom = arr => { const v = arr.filter(x => x !== null && isFinite(x)); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+const pct = arr => (arr.length ? (arr.filter(Boolean).length / arr.length) * 100 : 0);
+
+/* ---------- exportación ---------- */
+
+const csvCell = v => {
+  const s = v === null || v === undefined ? '' : String(v);
+  return /[",;\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+};
+const csv = rows => '﻿' + rows.map(r => r.map(csvCell).join(';')).join('\r\n');
+const n1 = v => (v === null || v === undefined ? '' : v.toFixed(1).replace('.', ','));
+
+function csvPerdidas(res) {
+  const rows = [['Estudiante', 'Periodo', 'Promedio del periodo', 'Áreas perdidas', 'Cuáles áreas', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)']];
+  for (const p of res.periodos) for (const f of p.filas) {
+    rows.push([f.nombre, p.hoja, n1(f.promedio), f.camposPerdidos.length,
+      f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)})`).join(' · '),
+      f.asigsPerdidas.length, f.asigsPerdidas.map(a => `${a.asignatura} (${n1(a.nota)})`).join(' · ')]);
+  }
+  return csv(rows);
+}
+function csvDetalle(res) {
+  const rows = [['Estudiante', 'Periodo', 'Campo', 'Asignatura', 'Nota', 'Peso aplicado', 'Estado', 'Nota del área (recalculada)']];
+  for (const p of res.periodos) for (const f of p.filas) for (const c of f.campos) for (const d of c.detalle) {
+    rows.push([f.nombre, p.hoja, c.campo, d.asignatura, d.nota === null ? '' : n1(d.nota),
+      String(d.peso).replace('.', ','), d.omitida ? 'sin nota' : (d.pierde ? 'PIERDE' : 'aprueba'), n1(c.area)]);
+  }
+  return csv(rows);
+}
+function csvResumen(res) {
+  const rows = [['Nivel', 'Nombre', 'Campo', ...res.periodos.flatMap(p => [`${p.hoja} · promedio`, `${p.hoja} · % pierde`])]];
+  for (const k of res.campos)
+    rows.push(['Área', k.nombre, '', ...res.periodos.flatMap(p => { const x = p.campo.find(c => c.nombre === k.nombre); return [n1(x?.promedio ?? null), n1(x?.pct ?? null)]; })]);
+  for (const k of res.campos) for (const a of k.asigs)
+    rows.push(['Asignatura', a, k.nombre, ...res.periodos.flatMap(p => { const x = p.asig.find(s => s.nombre === a && s.campo === k.nombre); return [n1(x?.promedio ?? null), n1(x?.pct ?? null)]; })]);
+  return csv(rows);
+}
+function csvConsolidado(res) {
+  const rows = [['#', 'Estudiante', ...res.periodos.flatMap(p => [`${p.hoja} · promedio`, `${p.hoja} · áreas perdidas`]), 'Promedio global', 'Variación primer→último']];
+  res.estudiantes.forEach((e, i) => rows.push([i + 1, e.nombre,
+    ...e.porPeriodo.flatMap((f, j) => [n1(e.promedios[j]), f ? f.camposPerdidos.length : '']),
+    n1(e.global), n1(e.delta)]));
+  return csv(rows);
+}
+
+
+
+/* ============================================================================
+   Interfaz: cargar archivo → recalcular pesos → mostrar y exportar el análisis.
+   ==========================================================================*/
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const f1 = v => (v === null || v === undefined || !isFinite(v) ? '—' : v.toFixed(1).replace('.', ','));
+const claseNota = (v, u) => (v === null ? '' : v < u ? 'neg' : v < u + 10 ? 'mid' : 'pos');
+
+let SHEETS = null, RES = null, ARCHIVO = '';
+const OPTS = { umbral: 60, ceroSinNota: false, pesos: {} };
+let periodoActivo = 0, soloPierden = false, busqueda = '';
+
+/* ---------- carga ---------- */
+
+async function cargar(file) {
+  ARCHIVO = file.name;
+  estado('cargando', `Leyendo ${file.name}…`);
+  try {
+    const buf = await file.arrayBuffer();
+    SHEETS = await readWorkbook(buf);
+    OPTS.pesos = {};
+    recalcular();
+  } catch (err) {
+    estado('error', mensajeAmable(err));
+    console.error(err);
+  }
+}
+
+function recalcular() {
+  try {
+    RES = analizar(SHEETS, OPTS);
+    if (periodoActivo >= RES.periodos.length) periodoActivo = 0;
+    estado('ok');
+    pintar();
+  } catch (err) {
+    estado('error', mensajeAmable(err));
+    console.error(err);
+  }
+}
+
+function mensajeAmable(err) {
+  const t = (err && err.message) || '';
+  if (/ZIP|xlsx válido/i.test(t))
+    return 'Ese archivo no parece ser un Excel .xlsx. Si el consolidado está en formato antiguo (.xls), abrilo en Excel y guardalo como «Libro de Excel (.xlsx)».';
+  if (/descomprimir|navegador/i.test(t))
+    return 'Este navegador es muy antiguo para abrir el archivo. Probá con Google Chrome o Microsoft Edge actualizados.';
+  if (/hoja/i.test(t))
+    return t + ' Revisá que el archivo sea el consolidado por periodo, con la fila de pesos y los nombres de los estudiantes.';
+  return t || 'No se pudo leer el archivo. Revisá que sea el consolidado por periodo en formato .xlsx.';
+}
+
+function estado(modo, msg) {
+  $('#drop').hidden = modo === 'ok';
+  $('#app').hidden = modo !== 'ok';
+  $('#msg').hidden = !msg;
+  $('#msg').textContent = msg || '';
+  $('#msg').className = 'msg ' + (modo === 'error' ? 'err' : '');
+}
+
+/* ---------- pintado ---------- */
+
+function pintar() {
+  $('#nombreArchivo').textContent = ARCHIVO;
+  $('#subtitulo').textContent =
+    `${RES.periodos.length} periodo${RES.periodos.length > 1 ? 's' : ''} con notas · ${RES.periodos[0].total} estudiantes · ${RES.campos.length} áreas`;
+  pintarAvisoPesos();
+  pintarPesos();
+  pintarResumen();
+  pintarTabsPeriodo();
+  pintarEstudiantes();
+  pintarAsignaturas();
+  pintarRevision();
+}
+
+function pintarAvisoPesos() {
+  const c = RES.cambiosPeso;
+  const box = $('#avisoPesos');
+  if (!c.length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = `<div class="h">Ponderación corregida al cargar</div>` +
+    `<p>${c.map(x => `<strong>${esc(x.asignatura)}</strong> ${String(x.de).replace('.', ',')} → ${String(x.a).replace('.', ',')}`).join(' · ')}
+     <span class="mut">(en ${esc(c[0].campo)}, en todas las hojas)</span></p>
+    <p class="mut">Todas las notas de área de abajo están recalculadas con estos pesos, no con los del archivo.</p>`;
+}
+
+function pintarPesos() {
+  const cont = $('#pesos');
+  cont.innerHTML = RES.campos.map(k => {
+    const suma = k.asigs.reduce((s, a) => s + (RES.pesosPorClave[k.nombre + '||' + a] ?? 0), 0);
+    return `<div class="campo">
+      <div class="campoTit">${esc(k.nombre)} <span class="${Math.abs(suma - 1) < 0.005 ? 'mut' : 'neg'}">suma ${suma.toFixed(2).replace('.', ',')}</span></div>
+      ${k.asigs.map(a => {
+        const clave = k.nombre + '||' + a, val = RES.pesosPorClave[clave] ?? 0;
+        const corregida = RES.cambiosPeso.some(c => c.asignatura === a && c.campo === k.nombre);
+        return `<label class="peso${corregida ? ' fix' : ''}"><span>${esc(a)}</span>
+          <input type="number" step="0.01" min="0" max="1" value="${val}" data-clave="${esc(clave)}"></label>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+  cont.oninput = e => {
+    const inp = e.target.closest('input[data-clave]');
+    if (!inp) return;
+    const v = parseFloat(inp.value);
+    if (!isFinite(v)) return;
+    OPTS.pesos = { ...RES.pesosPorClave, [inp.dataset.clave]: v };
+    recalcular();
+  };
+}
+
+function pintarResumen() {
+  const P = RES.periodos;
+  const kpi = (k, v, s, warn) => `<div class="kpi"><div class="k">${k}</div><div class="v${warn ? ' warn' : ''}">${v}</div><div class="s">${s}</div></div>`;
+  const ult = P[P.length - 1];
+  $('#kpis').innerHTML =
+    kpi('Promedio del curso', f1(ult.promedio), `en ${esc(ult.hoja)} · ${P.map(p => f1(p.promedio)).join(' → ')}`) +
+    kpi('Áreas perdidas', f1(ult.pctAreas) + ' %', `de todas las áreas cursadas · ${P.map(p => f1(p.pctAreas) + '%').join(' → ')}`, ult.pctAreas > 20) +
+    kpi('Sin perder nada', `${ult.sinPerder}<span class="de"> / ${ult.total}</span>`, `estudiantes · ${P.map(p => p.sinPerder).join(' → ')}`) +
+    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> / ${ult.total}</span>`, `riesgo alto · ${P.map(p => p.tresOMas).join(' → ')}`, ult.tresOMas > 0);
+
+  const cab = P.map(p => `<th colspan="2">${esc(p.hoja)}</th>`).join('');
+  const sub = P.map(() => `<th>Prom.</th><th>% pierde</th>`).join('');
+  $('#tablaAreas').innerHTML = `
+    <table><caption>Nota del área recalculada con los pesos vigentes y porcentaje de estudiantes que la pierden.</caption>
+    <thead><tr class="sup"><th class="spacer"></th>${cab}</tr><tr><th class="lbl">Área</th>${sub}</tr></thead>
+    <tbody>${RES.campos.map(k => `<tr><th scope="row">${esc(k.nombre)}</th>${P.map(p => {
+      const x = p.campo.find(c => c.nombre === k.nombre) || {};
+      return `<td class="num ${claseNota(x.promedio, RES.umbral)}">${f1(x.promedio)}</td><td class="num heat ${heat(x.pct)}">${f1(x.pct)} %</td>`;
+    }).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+const heat = v => (v === null || v === undefined ? 'r0' : v === 0 ? 'r0' : v < 15 ? 'r1' : v < 30 ? 'r2' : v < 50 ? 'r3' : 'r4');
+
+function pintarTabsPeriodo() {
+  $('#tabsPeriodo').innerHTML = RES.periodos.map((p, i) =>
+    `<button class="chip${i === periodoActivo ? ' on' : ''}" data-p="${i}">${esc(p.hoja)}</button>`).join('');
+  $('#tabsPeriodo').onclick = e => {
+    const b = e.target.closest('[data-p]');
+    if (!b) return;
+    periodoActivo = +b.dataset.p;
+    pintarTabsPeriodo(); pintarEstudiantes();
+  };
+}
+
+function pintarEstudiantes() {
+  const p = RES.periodos[periodoActivo];
+  let filas = p.filas;
+  if (soloPierden) filas = filas.filter(f => f.camposPerdidos.length);
+  if (busqueda) {
+    const q = busqueda.toLowerCase();
+    filas = filas.filter(f => f.nombre.toLowerCase().includes(q));
+  }
+  filas = [...filas].sort((a, b) => b.camposPerdidos.length - a.camposPerdidos.length || (a.promedio ?? 0) - (b.promedio ?? 0));
+
+  $('#contEst').innerHTML = filas.length ? filas.map(f => `
+    <article class="est${f.camposPerdidos.length ? ' alerta' : ''}">
+      <div class="estCab">
+        <h4>${esc(f.nombre)}</h4>
+        <div class="estNums">
+          <span class="mut">promedio</span> <b class="${claseNota(f.promedio, RES.umbral)}">${f1(f.promedio)}</b>
+          <span class="sep"></span>
+          <b class="${f.camposPerdidos.length ? 'neg' : 'pos'}">${f.camposPerdidos.length}</b> <span class="mut">de ${f.campos.length} áreas</span>
+        </div>
+      </div>
+      ${f.camposPerdidos.length ? `
+        <div class="linea"><span class="et">Áreas que pierde</span>
+          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag bad">${esc(c.campo)} <b>${f1(c.nota)}</b></span>`).join('')}</div></div>
+        <div class="linea"><span class="et">Asignaturas que pierde</span>
+          <div class="chips">${f.asigsPerdidas.map(a => `<span class="tag">${esc(a.asignatura)} <b>${f1(a.nota)}</b></span>`).join('') || '<span class="mut">ninguna: el área cae por el promedio ponderado, no por una asignatura suelta</span>'}</div></div>`
+      : `<div class="linea ok">Aprueba las ${f.campos.length} áreas${f.asigsPerdidas.length ? ` · pero pierde ${f.asigsPerdidas.length} asignatura${f.asigsPerdidas.length > 1 ? 's' : ''}: ${f.asigsPerdidas.map(a => esc(a.asignatura) + ' (' + f1(a.nota) + ')').join(', ')}` : ''}</div>`}
+    </article>`).join('') : `<p class="mut">Ningún estudiante coincide con el filtro.</p>`;
+
+  $('#contadorEst').textContent = `${filas.length} de ${p.filas.length} estudiantes`;
+}
+
+function pintarAsignaturas() {
+  const P = RES.periodos;
+  const cab = P.map(p => `<th colspan="2">${esc(p.hoja)}</th>`).join('');
+  const sub = P.map(() => `<th>Prom.</th><th>% pierde</th>`).join('');
+  const filas = [];
+  for (const k of RES.campos) {
+    filas.push(`<tr class="grp"><th colspan="${1 + P.length * 2}">${esc(k.nombre)}</th></tr>`);
+    for (const a of k.asigs) {
+      const peso = RES.pesosPorClave[k.nombre + '||' + a];
+      filas.push(`<tr><th scope="row" class="sub">${esc(a)} <span class="mut">· peso ${String(peso).replace('.', ',')}</span></th>${
+        P.map(p => {
+          const x = p.asig.find(s => s.nombre === a && s.campo === k.nombre) || {};
+          return `<td class="num ${claseNota(x.promedio, RES.umbral)}">${f1(x.promedio)}</td><td class="num heat ${heat(x.pct)}">${f1(x.pct)} %</td>`;
+        }).join('')}</tr>`);
+    }
+  }
+  $('#tablaAsig').innerHTML = `<table><caption>Promedio de cada asignatura y porcentaje de estudiantes con nota bajo ${RES.umbral}.</caption>
+    <thead><tr class="sup"><th class="spacer"></th>${cab}</tr><tr><th class="lbl">Asignatura</th>${sub}</tr></thead>
+    <tbody>${filas.join('')}</tbody></table>`;
+}
+
+function pintarRevision() {
+  const items = [];
+  if (RES.vacias.length) items.push(['Hojas sin datos', RES.vacias.map(v => `<strong>${esc(v.hoja)}</strong> — ${esc(v.motivo)}`).join('<br>')]);
+  if (RES.cambiosPeso.length) items.push(['Pesos corregidos',
+    RES.cambiosPeso.map(c => `<strong>${esc(c.asignatura)}</strong> ${String(c.de).replace('.', ',')} → ${String(c.a).replace('.', ',')} <span class="mut">(${esc(c.campo)})</span>`).join('<br>')]);
+  for (const p of RES.periodos) {
+    const sub = [];
+    if (p.ceros) sub.push(`<strong>${p.ceros}</strong> notas en 0 — entran al promedio como calificación real salvo que actives «tratar 0 como sin nota».`);
+    p.duplicadas.forEach(d => sub.push(`Columnas con la misma nota: <strong>${d.asignaturas.map(esc).join(' = ')}</strong> en ${d.iguales} de ${d.total} estudiantes.`));
+    p.sumaPesos.forEach(s => sub.push(`Los pesos de <strong>${esc(s.campo)}</strong> suman ${s.suma.toFixed(2).replace('.', ',')}, no 1,00.`));
+    const desc = p.filas.filter(f => f.campos.some(c => c.areaArchivo !== null && c.area !== null && Math.abs(c.area - c.areaArchivo) > 0.15)).length;
+    if (desc) sub.push(`<strong>${desc}</strong> estudiantes tienen al menos un área cuyo valor recalculado difiere del que trae el archivo <span class="mut">(esperado si se corrigieron pesos)</span>.`);
+    if (sub.length) items.push([p.hoja, sub.join('<br>')]);
+  }
+  $('#revision').innerHTML = items.length
+    ? items.map(([t, c]) => `<div class="rev"><div class="revTit">${esc(t)}</div><div>${c}</div></div>`).join('')
+    : '<p class="mut">Sin observaciones: no se detectaron hojas vacías, columnas repetidas ni pesos inconsistentes.</p>';
+}
+
+/* ---------- descargas ---------- */
+
+const EXPORTS = {
+  perdidas: { f: csvPerdidas, nombre: 'areas-y-asignaturas-perdidas' },
+  consolidado: { f: csvConsolidado, nombre: 'consolidado-por-estudiante' },
+  resumen: { f: csvResumen, nombre: 'resumen-areas-y-asignaturas' },
+  detalle: { f: csvDetalle, nombre: 'detalle-nota-por-nota' },
+};
+
+function nombreArchivo(base) {
+  const curso = (ARCHIVO.replace(/\.xlsx?$/i, '').match(/\d{3,4}/) || [])[0];
+  return base + (curso ? '-' + curso : '');
+}
+
+async function descargar(clave) {
+  const { f, nombre } = EXPORTS[clave];
+  const contenido = f(RES);
+  const base = nombreArchivo(nombre);
+  const dl = window.claude && typeof claude.use === 'function' ? await claude.use('downloads') : null;
+  if (!dl) return copiar(contenido, 'No se pudo abrir la descarga; el contenido quedó copiado al portapapeles.');
+  try {
+    await dl.save({ filename: base + '.csv', data: contenido });
+    aviso('Archivo guardado.');
+  } catch (e) {
+    if (e && e.code === 'extension_not_enabled') {
+      try {
+        await dl.save({ filename: base + '.txt', data: contenido });
+        aviso('Guardado como .txt — en Excel: Datos › Obtener datos › Desde texto, separador punto y coma.');
+      } catch (e2) { fallo(e2, contenido); }
+    } else fallo(e, contenido);
+  }
+}
+
+function fallo(e, contenido) {
+  if (e && e.code === 'declined') return;
+  if (e && e.code === 'rate_limited') return aviso('Esperá un momento antes de pedir otra descarga.');
+  copiar(contenido, 'La descarga no está disponible acá; el contenido quedó copiado al portapapeles.');
+}
+
+async function copiar(texto, msg) {
+  try { await navigator.clipboard.writeText(texto); aviso(msg || 'Copiado al portapapeles.'); }
+  catch { aviso('No se pudo copiar automáticamente.'); }
+}
+
+let avisoT;
+function aviso(t) {
+  const el = $('#toast');
+  el.textContent = t; el.hidden = false;
+  clearTimeout(avisoT);
+  avisoT = setTimeout(() => { el.hidden = true; }, 5200);
+}
+
+/* ---------- eventos ---------- */
+
+function init() {
+  const drop = $('#drop'), input = $('#file');
+  $('#btnElegir').onclick = () => input.click();
+  $('#btnOtro').onclick = () => input.click();
+  input.onchange = () => input.files[0] && cargar(input.files[0]);
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) cargar(f); });
+
+  $('#umbral').oninput = e => { const v = parseFloat(e.target.value); if (isFinite(v)) { OPTS.umbral = v; recalcular(); } };
+  $('#ceroSinNota').onchange = e => { OPTS.ceroSinNota = e.target.checked; recalcular(); };
+  $('#soloPierden').onchange = e => { soloPierden = e.target.checked; pintarEstudiantes(); };
+  $('#buscar').oninput = e => { busqueda = e.target.value.trim(); pintarEstudiantes(); };
+  $('#toggleOpciones').onclick = () => {
+    const d = $('#panelOpciones');
+    d.hidden = !d.hidden;
+    $('#toggleOpciones').setAttribute('aria-expanded', String(!d.hidden));
+    $('#toggleOpciones').textContent = d.hidden ? 'Opciones avanzadas' : 'Ocultar opciones';
+  };
+  $('#btnImprimir').onclick = () => {
+    try { window.print(); }
+    catch { aviso('Tu navegador bloqueó la impresión acá. Descargá la lista en «Descargar e imprimir» y abrila en Excel.'); }
+  };
+
+  $$('.tabbar button').forEach(b => b.onclick = () => {
+    $$('.tabbar button').forEach(x => x.classList.toggle('on', x === b));
+    $$('.panel').forEach(p => { p.hidden = p.id !== 'panel-' + b.dataset.tab; });
+  });
+  $$('[data-export]').forEach(b => b.onclick = () => descargar(b.dataset.export));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+</script>

@@ -1,0 +1,5 @@
+# Nunca versionar consolidados ni datos de estudiantes
+*.xlsx
+*.xls
+*.csv
+datos/
