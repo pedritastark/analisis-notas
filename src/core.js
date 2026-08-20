@@ -220,15 +220,19 @@ function analizar(sheets, opts = {}) {
   for (const sh of sheets) {
     const est = estructura(sh.grid);
     if (!est.campos.length || !est.estudiantes.length) { vacias.push({ hoja: sh.name, motivo: 'sin estructura reconocible' }); continue; }
-    const notas = est.asigs.flatMap(a => est.estudiantes.map(e => sh.grid[e.fila]?.[a.col])).filter(isNum);
-    const diligenciadas = notas.filter(v => v !== 0).length / (notas.length || 1);
-    if (diligenciadas < 0.2) {
-      vacias.push({ hoja: sh.name, motivo: diligenciadas === 0 ? 'plantilla en ceros, sin diligenciar'
-        : `plantilla casi vacía: solo ${(diligenciadas * 100).toFixed(0)} % de las notas tienen valor` });
+    // Una asignatura está "pendiente de digitar" si NINGÚN estudiante tiene nota distinta de 0.
+    // Un 0 suelto dentro de una columna con notas sí es una calificación real.
+    const pendientes = new Set();
+    for (const a of est.asigs) {
+      const hayNota = est.estudiantes.some(e => { const v = sh.grid[e.fila]?.[a.col]; return isNum(v) && v !== 0; });
+      if (!hayNota) pendientes.add(a.col);
+    }
+    if (pendientes.size === est.asigs.length) {
+      vacias.push({ hoja: sh.name, motivo: 'ninguna asignatura tiene notas digitadas' });
       continue;
     }
     if (!estructuraRef) estructuraRef = est;
-    periodos.push({ hoja: sh.name, grid: sh.grid, est });
+    periodos.push({ hoja: sh.name, grid: sh.grid, est, pendientes });
   }
   if (!periodos.length) throw new Error('Ninguna hoja del archivo tiene notas cargadas.');
 
@@ -242,12 +246,15 @@ function analizar(sheets, opts = {}) {
   }
 
   const salida = { periodos: [], estudiantes: [], asignaturas: [], campos: [], cambiosPeso, vacias, umbral, pesosPorClave, avisos: [] };
-  const nombresEst = periodos[0].est.estudiantes.map(e => e.nombre);
+  const nombresEst = [];
   salida.campos = periodos[0].est.campos.map(k => ({ nombre: k.nombre, asigs: k.asigs.map(a => a.nombre) }));
 
   for (const p of periodos) {
-    const { grid, est } = p;
-    const per = { hoja: p.hoja, filas: [], asig: [], campo: [], ceros: 0, duplicadas: [], sumaPesos: [] };
+    const { grid, est, pendientes } = p;
+    const per = { hoja: p.hoja, filas: [], asig: [], campo: [], ceros: 0, duplicadas: [], sumaPesos: [],
+                  pendientes: est.asigs.filter(a => pendientes.has(a.col)).map(a => ({ nombre: a.nombre, campo: a.campo })),
+                  totalAsigs: est.asigs.length, digitadas: est.asigs.length - pendientes.size,
+                  cerosEnColumnasMixtas: 0 };
 
     // control: pesos que no suman 1 por campo
     for (const k of est.campos) {
@@ -274,22 +281,28 @@ function analizar(sheets, opts = {}) {
     for (const e of est.estudiantes) {
       const fila = { nombre: e.nombre, campos: [], asigsPerdidas: [], camposPerdidos: [] };
       for (const k of est.campos) {
-        let acc = 0, pesoUtil = 0;
+        let acc = 0, pesoUtil = 0, pesoTotal = 0;
         const detalle = [];
         for (const a of k.asigs) {
           const w = pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig;
           const v = grid[e.fila]?.[a.col];
           const nota = isNum(v) ? v : null;
-          const omitida = nota === null || (ceroSinNota && nota === 0);
-          if (nota === 0) per.ceros++;
+          const pendiente = pendientes.has(a.col);
+          const omitida = pendiente || nota === null || (ceroSinNota && nota === 0);
+          pesoTotal += w;
+          if (nota === 0 && !pendiente) { per.ceros++; per.cerosEnColumnasMixtas++; }
           if (!omitida) { acc += nota * w; pesoUtil += w; }
-          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pierde: nota !== null && nota < umbral && !omitida });
-          if (nota !== null && nota < umbral && !omitida) fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
+          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pendiente,
+                         pierde: !omitida && nota !== null && nota < umbral });
+          if (!omitida && nota !== null && nota < umbral) fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
         }
         const area = pesoUtil > 0 ? acc / pesoUtil : null;
+        const soporte = pesoTotal > 0 ? pesoUtil / pesoTotal : 0;
+        const provisional = area !== null && soporte < 0.999;
         const areaArchivo = isNum(grid[e.fila]?.[k.col]) ? grid[e.fila][k.col] : null;
-        fila.campos.push({ campo: k.nombre, area, areaArchivo, detalle, pierde: area !== null && area < umbral });
-        if (area !== null && area < umbral) fila.camposPerdidos.push({ campo: k.nombre, nota: area });
+        fila.campos.push({ campo: k.nombre, area, areaArchivo, detalle, soporte, provisional,
+                           sinDatos: area === null, pierde: area !== null && area < umbral });
+        if (area !== null && area < umbral) fila.camposPerdidos.push({ campo: k.nombre, nota: area, provisional });
       }
       const areas = fila.campos.map(c => c.area).filter(v => v !== null);
       fila.promedio = areas.length ? areas.reduce((s, v) => s + v, 0) / areas.length : null;
@@ -309,7 +322,8 @@ function analizar(sheets, opts = {}) {
     per.asig = est.asigs.map(a => {
       const vals = per.filas.flatMap(f => f.campos.flatMap(c => c.detalle.filter(d => d.asignatura === a.nombre && d.campo === a.campo)));
       return {
-        nombre: a.nombre, campo: a.campo, peso: pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig,
+        nombre: a.nombre, campo: a.campo, pendiente: pendientes.has(a.col),
+        peso: pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig,
         promedio: prom(vals.filter(v => !v.omitida).map(v => v.nota)),
         pct: pct(vals.filter(v => !v.omitida).map(v => v.pierde)),
         pierden: vals.filter(v => v.pierde).length, ceros: vals.filter(v => v.nota === 0).length,
@@ -318,7 +332,8 @@ function analizar(sheets, opts = {}) {
     salida.periodos.push(per);
   }
 
-  // consolidado por estudiante
+  // consolidado por estudiante: unión de nombres de todos los periodos, en orden de aparición
+  for (const p of salida.periodos) for (const f of p.filas) if (!nombresEst.includes(f.nombre)) nombresEst.push(f.nombre);
   salida.estudiantes = nombresEst.map(nom => {
     const porPeriodo = salida.periodos.map(p => p.filas.find(f => f.nombre === nom) || null);
     const proms = porPeriodo.map(f => (f ? f.promedio : null));
@@ -328,7 +343,7 @@ function analizar(sheets, opts = {}) {
       nombre: nom, porPeriodo, promedios: proms,
       global: validos.length ? validos.reduce((s, v) => s + v, 0) / validos.length : null,
       delta: primero !== null && ultimo !== null ? ultimo - primero : null,
-      perdidasPorPeriodo: porPeriodo.map(f => (f ? f.camposPerdidos.length : 0)),
+      perdidasPorPeriodo: porPeriodo.map(f => (f ? f.camposPerdidos.length : null)),
       totalAsigsPerdidas: porPeriodo.reduce((s, f) => s + (f ? f.asigsPerdidas.length : 0), 0),
     };
   }).sort((a, b) => (b.global ?? -1) - (a.global ?? -1));
@@ -349,11 +364,17 @@ const csv = rows => '﻿' + rows.map(r => r.map(csvCell).join(';')).join('\r\n')
 const n1 = v => (v === null || v === undefined ? '' : v.toFixed(1).replace('.', ','));
 
 function csvPerdidas(res) {
-  const rows = [['Estudiante', 'Periodo', 'Promedio del periodo', 'Áreas perdidas', 'Cuáles áreas', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)']];
-  for (const p of res.periodos) for (const f of p.filas) {
-    rows.push([f.nombre, p.hoja, n1(f.promedio), f.camposPerdidos.length,
-      f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)})`).join(' · '),
-      f.asigsPerdidas.length, f.asigsPerdidas.map(a => `${a.asignatura} (${n1(a.nota)})`).join(' · ')]);
+  const rows = [['Estudiante', 'Periodo', 'Estado del periodo', 'Promedio del periodo', 'Áreas perdidas',
+    'Cuáles áreas', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)', 'Áreas sin datos']];
+  for (const p of res.periodos) {
+    const estado = p.pendientes.length ? `en digitación (${p.digitadas} de ${p.totalAsigs} asignaturas)` : 'completo';
+    for (const f of p.filas) {
+      const sinDatos = f.campos.filter(c => c.sinDatos).map(c => c.campo);
+      rows.push([f.nombre, p.hoja, estado, n1(f.promedio), f.camposPerdidos.length,
+        f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)}${c.provisional ? ', provisional' : ''})`).join(' · '),
+        f.asigsPerdidas.length, f.asigsPerdidas.map(a => `${a.asignatura} (${n1(a.nota)})`).join(' · '),
+        sinDatos.join(' · ')]);
+    }
   }
   return csv(rows);
 }

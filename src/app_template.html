@@ -109,6 +109,12 @@ input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .chip{background:var(--surface);border:1px solid var(--rule);border-radius:99px;padding:4px 13px;font-size:.8rem;color:var(--ink2)}
 .chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
+.chip.parcial{border-style:dashed}
+.chip .frac{font-family:"IBM Plex Mono",monospace;font-size:.75rem;opacity:.75}
+.note.aviso{border-left-color:var(--mid)}
+.note.aviso .h{color:var(--mid)}
+.tag.prov,.tag i{font-style:normal;font-size:.75rem;opacity:.8}
+.tag i{margin-left:3px}
 
 /* --- KPIs --- */
 #kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin:4px 0 20px}
@@ -240,6 +246,7 @@ footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-si
   </div>
 
   <section class="panel" id="panel-resumen">
+    <div id="avisoDigitacion" class="note aviso" hidden></div>
     <div id="kpis"></div>
     <div class="tablewrap" id="tablaAreas"></div>
     <p class="mut" style="font-size:.82rem">El color de la columna «% pierde» va de claro a intenso según cuántos
@@ -254,6 +261,7 @@ footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-si
       <span class="mut" id="contadorEst"></span>
       <button class="btn ghost sm" id="btnImprimir">Imprimir esta lista</button>
     </div>
+    <div id="avisoPeriodo" class="note aviso" hidden></div>
     <div id="contEst"></div>
   </section>
 

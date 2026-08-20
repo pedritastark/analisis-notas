@@ -112,14 +112,27 @@ function pintarPesos() {
 function pintarResumen() {
   const P = RES.periodos;
   const kpi = (k, v, s, warn) => `<div class="kpi"><div class="k">${k}</div><div class="v${warn ? ' warn' : ''}">${v}</div><div class="s">${s}</div></div>`;
-  const ult = P[P.length - 1];
+  // el titular se lee del último periodo COMPLETO; los que están en digitación no encabezan
+  const completos = P.filter(p => !p.pendientes.length);
+  const base = completos.length ? completos : P;
+  const ult = base[base.length - 1];
+  const enDigitacion = P.filter(p => p.pendientes.length);
   $('#kpis').innerHTML =
-    kpi('Promedio del curso', f1(ult.promedio), `en ${esc(ult.hoja)} · ${P.map(p => f1(p.promedio)).join(' → ')}`) +
-    kpi('Áreas perdidas', f1(ult.pctAreas) + ' %', `de todas las áreas cursadas · ${P.map(p => f1(p.pctAreas) + '%').join(' → ')}`, ult.pctAreas > 20) +
-    kpi('Sin perder nada', `${ult.sinPerder}<span class="de"> / ${ult.total}</span>`, `estudiantes · ${P.map(p => p.sinPerder).join(' → ')}`) +
-    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> / ${ult.total}</span>`, `riesgo alto · ${P.map(p => p.tresOMas).join(' → ')}`, ult.tresOMas > 0);
+    kpi('Promedio del curso', f1(ult.promedio), `en ${esc(ult.hoja)} · ${base.map(p => f1(p.promedio)).join(' → ')}`) +
+    kpi('Áreas perdidas', f1(ult.pctAreas) + ' %', `de las áreas con nota · ${base.map(p => f1(p.pctAreas) + '%').join(' → ')}`, ult.pctAreas > 20) +
+    kpi('Sin perder nada', `${ult.sinPerder}<span class="de"> / ${ult.total}</span>`, `estudiantes · ${base.map(p => p.sinPerder).join(' → ')}`) +
+    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> / ${ult.total}</span>`, `riesgo alto · ${base.map(p => p.tresOMas).join(' → ')}`, ult.tresOMas > 0);
 
-  const cab = P.map(p => `<th colspan="2">${esc(p.hoja)}</th>`).join('');
+  const banda = $('#avisoDigitacion');
+  if (enDigitacion.length) {
+    banda.hidden = false;
+    banda.innerHTML = `<div class="h">Periodos en digitación</div><p>` +
+      enDigitacion.map(p => `<strong>${esc(p.hoja)}</strong>: ${p.digitadas} de ${p.totalAsigs} asignaturas`).join(' · ') +
+      `.</p><p class="mut">Las cifras de arriba corresponden a ${esc(ult.hoja)}, el último periodo completo.
+       Los periodos incompletos se pueden consultar en «Qué pierde cada estudiante», con sus áreas marcadas como provisionales.</p>`;
+  } else banda.hidden = true;
+
+  const cab = P.map(p => `<th colspan="2">${esc(p.hoja)}${p.pendientes.length ? ` <span class="frac">${p.digitadas}/${p.totalAsigs}</span>` : ''}</th>`).join('');
   const sub = P.map(() => `<th>Prom.</th><th>% pierde</th>`).join('');
   $('#tablaAreas').innerHTML = `
     <table><caption>Nota del área recalculada con los pesos vigentes y porcentaje de estudiantes que la pierden.</caption>
@@ -134,7 +147,8 @@ const heat = v => (v === null || v === undefined ? 'r0' : v === 0 ? 'r0' : v < 1
 
 function pintarTabsPeriodo() {
   $('#tabsPeriodo').innerHTML = RES.periodos.map((p, i) =>
-    `<button class="chip${i === periodoActivo ? ' on' : ''}" data-p="${i}">${esc(p.hoja)}</button>`).join('');
+    `<button class="chip${i === periodoActivo ? ' on' : ''}${p.pendientes.length ? ' parcial' : ''}" data-p="${i}">${esc(p.hoja)}${
+      p.pendientes.length ? ` <span class="frac">${p.digitadas}/${p.totalAsigs}</span>` : ''}</button>`).join('');
   $('#tabsPeriodo').onclick = e => {
     const b = e.target.closest('[data-p]');
     if (!b) return;
@@ -163,15 +177,27 @@ function pintarEstudiantes() {
           <b class="${f.camposPerdidos.length ? 'neg' : 'pos'}">${f.camposPerdidos.length}</b> <span class="mut">de ${f.campos.length} áreas</span>
         </div>
       </div>
+      ${f.campos.some(c => c.sinDatos) ? `<div class="linea"><span class="et">Sin notas todavía</span>
+        <div class="chips">${f.campos.filter(c => c.sinDatos).map(c => `<span class="tag">${esc(c.campo)}</span>`).join('')}</div></div>` : ''}
       ${f.camposPerdidos.length ? `
         <div class="linea"><span class="et">Áreas que pierde</span>
-          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag bad">${esc(c.campo)} <b>${f1(c.nota)}</b></span>`).join('')}</div></div>
+          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag bad">${esc(c.campo)} <b>${f1(c.nota)}</b>${c.provisional ? ' <i>prov.</i>' : ''}</span>`).join('')}</div></div>
         <div class="linea"><span class="et">Asignaturas que pierde</span>
           <div class="chips">${f.asigsPerdidas.map(a => `<span class="tag">${esc(a.asignatura)} <b>${f1(a.nota)}</b></span>`).join('') || '<span class="mut">ninguna: el área cae por el promedio ponderado, no por una asignatura suelta</span>'}</div></div>`
       : `<div class="linea ok">Aprueba las ${f.campos.length} áreas${f.asigsPerdidas.length ? ` · pero pierde ${f.asigsPerdidas.length} asignatura${f.asigsPerdidas.length > 1 ? 's' : ''}: ${f.asigsPerdidas.map(a => esc(a.asignatura) + ' (' + f1(a.nota) + ')').join(', ')}` : ''}</div>`}
     </article>`).join('') : `<p class="mut">Ningún estudiante coincide con el filtro.</p>`;
 
   $('#contadorEst').textContent = `${filas.length} de ${p.filas.length} estudiantes`;
+
+  const av = $('#avisoPeriodo');
+  if (p.pendientes.length) {
+    av.hidden = false;
+    av.innerHTML = `<div class="h">Periodo en digitación</div>
+      <p>De ${p.totalAsigs} asignaturas hay <strong>${p.digitadas} digitadas</strong> y
+      <strong>${p.pendientes.length} pendientes</strong>: ${p.pendientes.map(x => esc(x.nombre)).join(', ')}.</p>
+      <p class="mut">Las asignaturas pendientes se excluyen del cálculo: no cuentan como perdidas. Un área marcada
+      <span class="tag prov">provisional</span> se calculó solo con las asignaturas ya digitadas, así que puede cambiar.</p>`;
+  } else av.hidden = true;
 }
 
 function pintarAsignaturas() {
@@ -186,6 +212,7 @@ function pintarAsignaturas() {
       filas.push(`<tr><th scope="row" class="sub">${esc(a)} <span class="mut">· peso ${String(peso).replace('.', ',')}</span></th>${
         P.map(p => {
           const x = p.asig.find(s => s.nombre === a && s.campo === k.nombre) || {};
+          if (x.pendiente) return `<td class="num mut" colspan="2" style="text-align:center">sin digitar</td>`;
           return `<td class="num ${claseNota(x.promedio, RES.umbral)}">${f1(x.promedio)}</td><td class="num heat ${heat(x.pct)}">${f1(x.pct)} %</td>`;
         }).join('')}</tr>`);
     }
@@ -202,7 +229,8 @@ function pintarRevision() {
     RES.cambiosPeso.map(c => `<strong>${esc(c.asignatura)}</strong> ${String(c.de).replace('.', ',')} → ${String(c.a).replace('.', ',')} <span class="mut">(${esc(c.campo)})</span>`).join('<br>')]);
   for (const p of RES.periodos) {
     const sub = [];
-    if (p.ceros) sub.push(`<strong>${p.ceros}</strong> notas en 0 — entran al promedio como calificación real salvo que actives «tratar 0 como sin nota».`);
+    if (p.pendientes.length) sub.push(`<strong>${p.pendientes.length}</strong> de ${p.totalAsigs} asignaturas sin digitar, excluidas del cálculo: ${p.pendientes.map(x => esc(x.nombre)).join(', ')}.`);
+    if (p.ceros) sub.push(`<strong>${p.ceros}</strong> notas en 0 dentro de columnas que sí tienen notas. Se cuentan como calificación real (y por tanto como pérdida); si en realidad son casillas sin digitar, activá «tratar los 0 como sin nota» en opciones avanzadas.`);
     p.duplicadas.forEach(d => sub.push(`Columnas con la misma nota: <strong>${d.asignaturas.map(esc).join(' = ')}</strong> en ${d.iguales} de ${d.total} estudiantes.`));
     p.sumaPesos.forEach(s => sub.push(`Los pesos de <strong>${esc(s.campo)}</strong> suman ${s.suma.toFixed(2).replace('.', ',')}, no 1,00.`));
     const desc = p.filas.filter(f => f.campos.some(c => c.areaArchivo !== null && c.area !== null && Math.abs(c.area - c.areaArchivo) > 0.15)).length;
