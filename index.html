@@ -6,7 +6,7 @@
   --paper:#EFF1F3; --surface:#FFFFFF; --sunk:#E6E9EC;
   --ink:#141A20; --ink2:#4C5763; --muted:#828E9A; --rule:#D5DAE0; --rule2:#E7EAEE;
   --accent:#1D4E6B; --accent-ink:#FFFFFF; --accent-soft:#DCE7EE;
-  --pos:#2C6B4B; --mid:#8A6A16; --neg:#9A3B2F; --neg-soft:#F6E4E1;
+  --pos:#2C6B4B; --mid:#8A6A16; --neg:#9A3B2F; --neg-soft:#F6E4E1; --mid-soft:#F7EBD2;
   --h0:transparent; --h1:#F3E2DE; --h2:#E4BBB3; --h3:#CE8C81; --h4:#B05B4D;
   --hink1:#6B4038; --hink2:#5B2F27; --hink3:#3B1C16; --hink4:#FFFFFF;
   --shadow:0 1px 2px rgba(20,26,32,.06),0 8px 24px -16px rgba(20,26,32,.28);
@@ -15,7 +15,7 @@
   --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
   --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
   --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
-  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F;
+  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F; --mid-soft:#33291A;
   --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
   --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
@@ -24,7 +24,7 @@
   --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
   --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
   --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
-  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F;
+  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F; --mid-soft:#33291A;
   --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
   --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
@@ -165,6 +165,9 @@ tr.grp th{background:var(--sunk);font-family:"IBM Plex Mono",monospace;font-size
 .tag b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
 .tag.bad{background:var(--neg-soft);color:var(--neg)}
 .tag.bad b{color:var(--neg)}
+.tag.warn{background:var(--mid-soft);color:var(--mid)}
+.tag.warn b{color:var(--mid)}
+.est.validar{border-left-color:var(--mid)}
 
 /* --- revisión y descargas --- */
 .rev{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:13px 16px;
@@ -230,7 +233,7 @@ footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-si
   <div id="panelOpciones" hidden>
     <div class="opcFila">
       <label>Nota mínima para aprobar <input type="number" id="umbral" value="60" min="1" max="100" step="1"></label>
-      <label><input type="checkbox" id="ceroSinNota"> Tratar los 0 como «sin nota» en vez de como calificación</label>
+      <label><input type="checkbox" id="sinRegistroCuenta"> No contar las notas sin registrar (ver cómo quedaría el curso si se registran)</label>
     </div>
     <p style="font-size:.9rem">Peso de cada asignatura dentro de su área. Los resaltados son los que se
     corrigieron al abrir el archivo. Si cambiás alguno, todo se recalcula al instante.</p>
@@ -257,6 +260,7 @@ footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-si
     <div class="barraEst">
       <div class="chips" id="tabsPeriodo"></div>
       <label><input type="checkbox" id="soloPierden"> Solo quienes pierden algo</label>
+      <label><input type="checkbox" id="soloSinRegistro"> Solo con notas sin registrar</label>
       <input type="search" id="buscar" placeholder="Buscar estudiante…" aria-label="Buscar estudiante">
       <span class="mut" id="contadorEst"></span>
       <button class="btn ghost sm" id="btnImprimir">Imprimir esta lista</button>
@@ -521,7 +525,9 @@ function pesosCorregidos(asigs) {
  */
 function analizar(sheets, opts = {}) {
   const umbral = opts.umbral ?? 60;
-  const ceroSinNota = !!opts.ceroSinNota;
+  // Una nota en 0 dentro de una columna que sí tiene notas se llama "no registra nota":
+  // cuenta como pérdida (por defecto) pero queda marcada para validar con el docente.
+  const contarSinRegistro = opts.sinRegistroCuenta !== false;
   const periodos = [], vacias = [];
   let estructuraRef = null, cambiosPeso = [], pesosPorClave = null;
 
@@ -562,7 +568,7 @@ function analizar(sheets, opts = {}) {
     const per = { hoja: p.hoja, filas: [], asig: [], campo: [], ceros: 0, duplicadas: [], sumaPesos: [],
                   pendientes: est.asigs.filter(a => pendientes.has(a.col)).map(a => ({ nombre: a.nombre, campo: a.campo })),
                   totalAsigs: est.asigs.length, digitadas: est.asigs.length - pendientes.size,
-                  cerosEnColumnasMixtas: 0 };
+                  sinRegistro: 0 };
 
     // control: pesos que no suman 1 por campo
     for (const k of est.campos) {
@@ -587,30 +593,39 @@ function analizar(sheets, opts = {}) {
     }
 
     for (const e of est.estudiantes) {
-      const fila = { nombre: e.nombre, campos: [], asigsPerdidas: [], camposPerdidos: [] };
+      const fila = { nombre: e.nombre, campos: [], asigsPerdidas: [], camposPerdidos: [], sinRegistro: [] };
       for (const k of est.campos) {
-        let acc = 0, pesoUtil = 0, pesoTotal = 0;
+        let acc = 0, pesoUtil = 0, pesoTotal = 0, accReg = 0, pesoReg = 0;
         const detalle = [];
         for (const a of k.asigs) {
           const w = pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig;
           const v = grid[e.fila]?.[a.col];
           const nota = isNum(v) ? v : null;
           const pendiente = pendientes.has(a.col);
-          const omitida = pendiente || nota === null || (ceroSinNota && nota === 0);
+          const sinRegistro = !pendiente && nota === 0;
+          const omitida = pendiente || nota === null || (sinRegistro && !contarSinRegistro);
           pesoTotal += w;
-          if (nota === 0 && !pendiente) { per.ceros++; per.cerosEnColumnasMixtas++; }
+          if (sinRegistro) { per.ceros++; per.sinRegistro++; }
           if (!omitida) { acc += nota * w; pesoUtil += w; }
-          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pendiente,
-                         pierde: !omitida && nota !== null && nota < umbral });
-          if (!omitida && nota !== null && nota < umbral) fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
+          if (!omitida && !sinRegistro) { accReg += nota * w; pesoReg += w; }
+          const estado = pendiente ? 'pendiente' : nota === null ? 'sinCelda'
+            : sinRegistro ? 'sinRegistro' : nota < umbral ? 'pierde' : 'aprueba';
+          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pendiente, sinRegistro, estado,
+                         pierde: estado === 'pierde' });
+          if (estado === 'pierde') fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
+          if (estado === 'sinRegistro') fila.sinRegistro.push({ asignatura: a.nombre, campo: k.nombre });
         }
         const area = pesoUtil > 0 ? acc / pesoUtil : null;
+        const areaReg = pesoReg > 0 ? accReg / pesoReg : null;   // solo con lo efectivamente registrado
         const soporte = pesoTotal > 0 ? pesoUtil / pesoTotal : 0;
         const provisional = area !== null && soporte < 0.999;
+        const pierde = area !== null && area < umbral;
+        // ¿el área se cae solo por las notas sin registrar, o ya se cae con lo registrado?
+        const porValidar = pierde && (areaReg === null || areaReg >= umbral);
         const areaArchivo = isNum(grid[e.fila]?.[k.col]) ? grid[e.fila][k.col] : null;
-        fila.campos.push({ campo: k.nombre, area, areaArchivo, detalle, soporte, provisional,
-                           sinDatos: area === null, pierde: area !== null && area < umbral });
-        if (area !== null && area < umbral) fila.camposPerdidos.push({ campo: k.nombre, nota: area, provisional });
+        fila.campos.push({ campo: k.nombre, area, areaReg, areaArchivo, detalle, soporte, provisional,
+                           sinDatos: area === null, pierde, porValidar });
+        if (pierde) fila.camposPerdidos.push({ campo: k.nombre, nota: area, provisional, porValidar, notaReg: areaReg });
       }
       const areas = fila.campos.map(c => c.area).filter(v => v !== null);
       fila.promedio = areas.length ? areas.reduce((s, v) => s + v, 0) / areas.length : null;
@@ -621,6 +636,8 @@ function analizar(sheets, opts = {}) {
     per.promedio = prom(per.filas.map(f => f.promedio));
     per.pctAreas = pct(per.filas.flatMap(f => f.campos.map(c => c.pierde)));
     per.sinPerder = per.filas.filter(f => f.camposPerdidos.length === 0).length;
+    per.conSinRegistro = per.filas.filter(f => f.sinRegistro.length).length;
+    per.areasPorValidar = per.filas.reduce((s, f) => s + f.camposPerdidos.filter(c => c.porValidar).length, 0);
     per.tresOMas = per.filas.filter(f => f.camposPerdidos.length >= 3).length;
     per.total = n;
     per.campo = est.campos.map(k => {
@@ -673,14 +690,17 @@ const n1 = v => (v === null || v === undefined ? '' : v.toFixed(1).replace('.', 
 
 function csvPerdidas(res) {
   const rows = [['Estudiante', 'Periodo', 'Estado del periodo', 'Promedio del periodo', 'Áreas perdidas',
-    'Cuáles áreas', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)', 'Áreas sin datos']];
+    'Cuáles áreas', 'De esas, por validar', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)',
+    'Asignaturas sin nota registrada', 'Áreas sin datos']];
   for (const p of res.periodos) {
     const estado = p.pendientes.length ? `en digitación (${p.digitadas} de ${p.totalAsigs} asignaturas)` : 'completo';
     for (const f of p.filas) {
       const sinDatos = f.campos.filter(c => c.sinDatos).map(c => c.campo);
       rows.push([f.nombre, p.hoja, estado, n1(f.promedio), f.camposPerdidos.length,
-        f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)}${c.provisional ? ', provisional' : ''})`).join(' · '),
+        f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)}${c.porValidar ? ', POR VALIDAR' : ''}${c.provisional ? ', provisional' : ''})`).join(' · '),
+        f.camposPerdidos.filter(c => c.porValidar).map(c => c.campo).join(' · '),
         f.asigsPerdidas.length, f.asigsPerdidas.map(a => `${a.asignatura} (${n1(a.nota)})`).join(' · '),
+        f.sinRegistro.map(a => a.asignatura).join(' · '),
         sinDatos.join(' · ')]);
     }
   }
@@ -722,9 +742,14 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '
 const f1 = v => (v === null || v === undefined || !isFinite(v) ? '—' : v.toFixed(1).replace('.', ','));
 const claseNota = (v, u) => (v === null ? '' : v < u ? 'neg' : v < u + 10 ? 'mid' : 'pos');
 
+/** Lista de chips que se resume cuando son muchos. */
+const chipsSinRegistro = (lista, total) => lista.length > 6
+  ? `<span class="tag warn"><b>${lista.length}</b> de ${total} asignaturas sin nota registrada</span>`
+  : lista.map(a => `<span class="tag warn">${esc(a.asignatura)}</span>`).join('');
+
 let SHEETS = null, RES = null, ARCHIVO = '';
-const OPTS = { umbral: 60, ceroSinNota: false, pesos: {} };
-let periodoActivo = 0, soloPierden = false, busqueda = '';
+const OPTS = { umbral: 60, sinRegistroCuenta: true, pesos: {} };
+let periodoActivo = 0, soloPierden = false, soloSinRegistro = false, busqueda = '';
 
 /* ---------- carga ---------- */
 
@@ -835,7 +860,10 @@ function pintarResumen() {
     kpi('Promedio del curso', f1(ult.promedio), `en ${esc(ult.hoja)} · ${base.map(p => f1(p.promedio)).join(' → ')}`) +
     kpi('Áreas perdidas', f1(ult.pctAreas) + ' %', `de las áreas con nota · ${base.map(p => f1(p.pctAreas) + '%').join(' → ')}`, ult.pctAreas > 20) +
     kpi('Sin perder nada', `${ult.sinPerder}<span class="de"> / ${ult.total}</span>`, `estudiantes · ${base.map(p => p.sinPerder).join(' → ')}`) +
-    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> / ${ult.total}</span>`, `riesgo alto · ${base.map(p => p.tresOMas).join(' → ')}`, ult.tresOMas > 0);
+    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> / ${ult.total}</span>`, `riesgo alto · ${base.map(p => p.tresOMas).join(' → ')}`, ult.tresOMas > 0) +
+    kpi('No registran nota', `${ult.conSinRegistro}<span class="de"> / ${ult.total}</span>`,
+      ult.areasPorValidar ? `${ult.areasPorValidar} áreas se pierden solo por eso — validar con los docentes`
+                          : 'estudiantes con alguna casilla en 0');
 
   const banda = $('#avisoDigitacion');
   if (enDigitacion.length) {
@@ -875,6 +903,7 @@ function pintarEstudiantes() {
   const p = RES.periodos[periodoActivo];
   let filas = p.filas;
   if (soloPierden) filas = filas.filter(f => f.camposPerdidos.length);
+  if (soloSinRegistro) filas = filas.filter(f => f.sinRegistro.length);
   if (busqueda) {
     const q = busqueda.toLowerCase();
     filas = filas.filter(f => f.nombre.toLowerCase().includes(q));
@@ -882,7 +911,8 @@ function pintarEstudiantes() {
   filas = [...filas].sort((a, b) => b.camposPerdidos.length - a.camposPerdidos.length || (a.promedio ?? 0) - (b.promedio ?? 0));
 
   $('#contEst').innerHTML = filas.length ? filas.map(f => `
-    <article class="est${f.camposPerdidos.length ? ' alerta' : ''}">
+    <article class="est${f.camposPerdidos.length ? (f.camposPerdidos.every(c => c.porValidar) ? ' validar' : ' alerta')
+        : (f.sinRegistro.length ? ' validar' : '')}">
       <div class="estCab">
         <h4>${esc(f.nombre)}</h4>
         <div class="estNums">
@@ -895,10 +925,15 @@ function pintarEstudiantes() {
         <div class="chips">${f.campos.filter(c => c.sinDatos).map(c => `<span class="tag">${esc(c.campo)}</span>`).join('')}</div></div>` : ''}
       ${f.camposPerdidos.length ? `
         <div class="linea"><span class="et">Áreas que pierde</span>
-          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag bad">${esc(c.campo)} <b>${f1(c.nota)}</b>${c.provisional ? ' <i>prov.</i>' : ''}</span>`).join('')}</div></div>
+          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag ${c.porValidar ? 'warn' : 'bad'}">${esc(c.campo)} <b>${f1(c.nota)}</b>${
+  c.porValidar ? ' <i>por validar</i>' : ''}${c.provisional ? ' <i>prov.</i>' : ''}</span>`).join('')}</div></div>
+        ${f.sinRegistro.length ? `<div class="linea"><span class="et">No registra nota</span>
+          <div class="chips">${chipsSinRegistro(f.sinRegistro, p.totalAsigs)}</div></div>` : ''}
         <div class="linea"><span class="et">Asignaturas que pierde</span>
           <div class="chips">${f.asigsPerdidas.map(a => `<span class="tag">${esc(a.asignatura)} <b>${f1(a.nota)}</b></span>`).join('') || '<span class="mut">ninguna: el área cae por el promedio ponderado, no por una asignatura suelta</span>'}</div></div>`
-      : `<div class="linea ok">Aprueba las ${f.campos.length} áreas${f.asigsPerdidas.length ? ` · pero pierde ${f.asigsPerdidas.length} asignatura${f.asigsPerdidas.length > 1 ? 's' : ''}: ${f.asigsPerdidas.map(a => esc(a.asignatura) + ' (' + f1(a.nota) + ')').join(', ')}` : ''}</div>`}
+      : `${f.sinRegistro.length ? `<div class="linea"><span class="et">No registra nota</span>
+          <div class="chips">${chipsSinRegistro(f.sinRegistro, p.totalAsigs)}</div></div>` : ''}
+        <div class="linea ok">Aprueba las ${f.campos.length} áreas${f.asigsPerdidas.length ? ` · pero pierde ${f.asigsPerdidas.length} asignatura${f.asigsPerdidas.length > 1 ? 's' : ''}: ${f.asigsPerdidas.map(a => esc(a.asignatura) + ' (' + f1(a.nota) + ')').join(', ')}` : ''}</div>`}
     </article>`).join('') : `<p class="mut">Ningún estudiante coincide con el filtro.</p>`;
 
   $('#contadorEst').textContent = `${filas.length} de ${p.filas.length} estudiantes`;
@@ -944,7 +979,8 @@ function pintarRevision() {
   for (const p of RES.periodos) {
     const sub = [];
     if (p.pendientes.length) sub.push(`<strong>${p.pendientes.length}</strong> de ${p.totalAsigs} asignaturas sin digitar, excluidas del cálculo: ${p.pendientes.map(x => esc(x.nombre)).join(', ')}.`);
-    if (p.ceros) sub.push(`<strong>${p.ceros}</strong> notas en 0 dentro de columnas que sí tienen notas. Se cuentan como calificación real (y por tanto como pérdida); si en realidad son casillas sin digitar, activá «tratar los 0 como sin nota» en opciones avanzadas.`);
+    if (p.sinRegistro) sub.push(`<strong>${p.sinRegistro}</strong> casillas en 0 dentro de columnas que sí tienen notas, en <strong>${p.conSinRegistro}</strong> estudiantes: se muestran como «no registra nota».` +
+      (p.areasPorValidar ? ` <strong>${p.areasPorValidar}</strong> áreas se pierden únicamente por esas casillas — hay que validarlas con el docente antes de reportarlas.` : ''));
     p.duplicadas.forEach(d => sub.push(`Columnas con la misma nota: <strong>${d.asignaturas.map(esc).join(' = ')}</strong> en ${d.iguales} de ${d.total} estudiantes.`));
     p.sumaPesos.forEach(s => sub.push(`Los pesos de <strong>${esc(s.campo)}</strong> suman ${s.suma.toFixed(2).replace('.', ',')}, no 1,00.`));
     const desc = p.filas.filter(f => f.campos.some(c => c.areaArchivo !== null && c.area !== null && Math.abs(c.area - c.areaArchivo) > 0.15)).length;
@@ -1020,8 +1056,9 @@ function init() {
   drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) cargar(f); });
 
   $('#umbral').oninput = e => { const v = parseFloat(e.target.value); if (isFinite(v)) { OPTS.umbral = v; recalcular(); } };
-  $('#ceroSinNota').onchange = e => { OPTS.ceroSinNota = e.target.checked; recalcular(); };
+  $('#sinRegistroCuenta').onchange = e => { OPTS.sinRegistroCuenta = !e.target.checked; recalcular(); };
   $('#soloPierden').onchange = e => { soloPierden = e.target.checked; pintarEstudiantes(); };
+  $('#soloSinRegistro').onchange = e => { soloSinRegistro = e.target.checked; pintarEstudiantes(); };
   $('#buscar').oninput = e => { busqueda = e.target.value.trim(); pintarEstudiantes(); };
   $('#toggleOpciones').onclick = () => {
     const d = $('#panelOpciones');

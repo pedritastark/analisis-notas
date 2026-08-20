@@ -213,7 +213,9 @@ function pesosCorregidos(asigs) {
  */
 function analizar(sheets, opts = {}) {
   const umbral = opts.umbral ?? 60;
-  const ceroSinNota = !!opts.ceroSinNota;
+  // Una nota en 0 dentro de una columna que sí tiene notas se llama "no registra nota":
+  // cuenta como pérdida (por defecto) pero queda marcada para validar con el docente.
+  const contarSinRegistro = opts.sinRegistroCuenta !== false;
   const periodos = [], vacias = [];
   let estructuraRef = null, cambiosPeso = [], pesosPorClave = null;
 
@@ -254,7 +256,7 @@ function analizar(sheets, opts = {}) {
     const per = { hoja: p.hoja, filas: [], asig: [], campo: [], ceros: 0, duplicadas: [], sumaPesos: [],
                   pendientes: est.asigs.filter(a => pendientes.has(a.col)).map(a => ({ nombre: a.nombre, campo: a.campo })),
                   totalAsigs: est.asigs.length, digitadas: est.asigs.length - pendientes.size,
-                  cerosEnColumnasMixtas: 0 };
+                  sinRegistro: 0 };
 
     // control: pesos que no suman 1 por campo
     for (const k of est.campos) {
@@ -279,30 +281,39 @@ function analizar(sheets, opts = {}) {
     }
 
     for (const e of est.estudiantes) {
-      const fila = { nombre: e.nombre, campos: [], asigsPerdidas: [], camposPerdidos: [] };
+      const fila = { nombre: e.nombre, campos: [], asigsPerdidas: [], camposPerdidos: [], sinRegistro: [] };
       for (const k of est.campos) {
-        let acc = 0, pesoUtil = 0, pesoTotal = 0;
+        let acc = 0, pesoUtil = 0, pesoTotal = 0, accReg = 0, pesoReg = 0;
         const detalle = [];
         for (const a of k.asigs) {
           const w = pesosPorClave[a.campo + '||' + a.nombre] ?? a.pesoOrig;
           const v = grid[e.fila]?.[a.col];
           const nota = isNum(v) ? v : null;
           const pendiente = pendientes.has(a.col);
-          const omitida = pendiente || nota === null || (ceroSinNota && nota === 0);
+          const sinRegistro = !pendiente && nota === 0;
+          const omitida = pendiente || nota === null || (sinRegistro && !contarSinRegistro);
           pesoTotal += w;
-          if (nota === 0 && !pendiente) { per.ceros++; per.cerosEnColumnasMixtas++; }
+          if (sinRegistro) { per.ceros++; per.sinRegistro++; }
           if (!omitida) { acc += nota * w; pesoUtil += w; }
-          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pendiente,
-                         pierde: !omitida && nota !== null && nota < umbral });
-          if (!omitida && nota !== null && nota < umbral) fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
+          if (!omitida && !sinRegistro) { accReg += nota * w; pesoReg += w; }
+          const estado = pendiente ? 'pendiente' : nota === null ? 'sinCelda'
+            : sinRegistro ? 'sinRegistro' : nota < umbral ? 'pierde' : 'aprueba';
+          detalle.push({ asignatura: a.nombre, campo: k.nombre, nota, peso: w, omitida, pendiente, sinRegistro, estado,
+                         pierde: estado === 'pierde' });
+          if (estado === 'pierde') fila.asigsPerdidas.push({ asignatura: a.nombre, campo: k.nombre, nota });
+          if (estado === 'sinRegistro') fila.sinRegistro.push({ asignatura: a.nombre, campo: k.nombre });
         }
         const area = pesoUtil > 0 ? acc / pesoUtil : null;
+        const areaReg = pesoReg > 0 ? accReg / pesoReg : null;   // solo con lo efectivamente registrado
         const soporte = pesoTotal > 0 ? pesoUtil / pesoTotal : 0;
         const provisional = area !== null && soporte < 0.999;
+        const pierde = area !== null && area < umbral;
+        // ¿el área se cae solo por las notas sin registrar, o ya se cae con lo registrado?
+        const porValidar = pierde && (areaReg === null || areaReg >= umbral);
         const areaArchivo = isNum(grid[e.fila]?.[k.col]) ? grid[e.fila][k.col] : null;
-        fila.campos.push({ campo: k.nombre, area, areaArchivo, detalle, soporte, provisional,
-                           sinDatos: area === null, pierde: area !== null && area < umbral });
-        if (area !== null && area < umbral) fila.camposPerdidos.push({ campo: k.nombre, nota: area, provisional });
+        fila.campos.push({ campo: k.nombre, area, areaReg, areaArchivo, detalle, soporte, provisional,
+                           sinDatos: area === null, pierde, porValidar });
+        if (pierde) fila.camposPerdidos.push({ campo: k.nombre, nota: area, provisional, porValidar, notaReg: areaReg });
       }
       const areas = fila.campos.map(c => c.area).filter(v => v !== null);
       fila.promedio = areas.length ? areas.reduce((s, v) => s + v, 0) / areas.length : null;
@@ -313,6 +324,8 @@ function analizar(sheets, opts = {}) {
     per.promedio = prom(per.filas.map(f => f.promedio));
     per.pctAreas = pct(per.filas.flatMap(f => f.campos.map(c => c.pierde)));
     per.sinPerder = per.filas.filter(f => f.camposPerdidos.length === 0).length;
+    per.conSinRegistro = per.filas.filter(f => f.sinRegistro.length).length;
+    per.areasPorValidar = per.filas.reduce((s, f) => s + f.camposPerdidos.filter(c => c.porValidar).length, 0);
     per.tresOMas = per.filas.filter(f => f.camposPerdidos.length >= 3).length;
     per.total = n;
     per.campo = est.campos.map(k => {
@@ -365,14 +378,17 @@ const n1 = v => (v === null || v === undefined ? '' : v.toFixed(1).replace('.', 
 
 function csvPerdidas(res) {
   const rows = [['Estudiante', 'Periodo', 'Estado del periodo', 'Promedio del periodo', 'Áreas perdidas',
-    'Cuáles áreas', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)', 'Áreas sin datos']];
+    'Cuáles áreas', 'De esas, por validar', 'Asignaturas perdidas', 'Cuáles asignaturas (nota)',
+    'Asignaturas sin nota registrada', 'Áreas sin datos']];
   for (const p of res.periodos) {
     const estado = p.pendientes.length ? `en digitación (${p.digitadas} de ${p.totalAsigs} asignaturas)` : 'completo';
     for (const f of p.filas) {
       const sinDatos = f.campos.filter(c => c.sinDatos).map(c => c.campo);
       rows.push([f.nombre, p.hoja, estado, n1(f.promedio), f.camposPerdidos.length,
-        f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)}${c.provisional ? ', provisional' : ''})`).join(' · '),
+        f.camposPerdidos.map(c => `${c.campo} (${n1(c.nota)}${c.porValidar ? ', POR VALIDAR' : ''}${c.provisional ? ', provisional' : ''})`).join(' · '),
+        f.camposPerdidos.filter(c => c.porValidar).map(c => c.campo).join(' · '),
         f.asigsPerdidas.length, f.asigsPerdidas.map(a => `${a.asignatura} (${n1(a.nota)})`).join(' · '),
+        f.sinRegistro.map(a => a.asignatura).join(' · '),
         sinDatos.join(' · ')]);
     }
   }

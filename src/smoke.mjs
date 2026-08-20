@@ -67,11 +67,11 @@ el('umbral').onchange, el('umbral').oninput({ target: { value: '70' } });
 console.log('  ', el('kpis').innerHTML.match(/<div class="v[^"]*">([^<]+)</g).join(' '));
 el('umbral').oninput({ target: { value: '60' } });
 
-console.log('== Tratar 0 como sin nota ==');
-el('ceroSinNota').onchange({ target: { checked: true } });
+console.log('== No contar las notas sin registrar ==');
+el('sinRegistroCuenta').onchange({ target: { checked: true } });
 const p1 = scope.RES.periodos[0];
 console.log('   P1 promedio:', p1.promedio.toFixed(2), '| % áreas perdidas:', p1.pctAreas.toFixed(1), '| sin perder:', p1.sinPerder+'/'+p1.total);
-el('ceroSinNota').onchange({ target: { checked: false } });
+el('sinRegistroCuenta').onchange({ target: { checked: false } });
 console.log('   vuelve a:', scope.RES.periodos[0].promedio.toFixed(2));
 
 console.log('== Editar un peso a mano (Tecnología 0,33 → 0,20) ==');

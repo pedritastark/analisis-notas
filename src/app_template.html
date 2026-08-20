@@ -6,7 +6,7 @@
   --paper:#EFF1F3; --surface:#FFFFFF; --sunk:#E6E9EC;
   --ink:#141A20; --ink2:#4C5763; --muted:#828E9A; --rule:#D5DAE0; --rule2:#E7EAEE;
   --accent:#1D4E6B; --accent-ink:#FFFFFF; --accent-soft:#DCE7EE;
-  --pos:#2C6B4B; --mid:#8A6A16; --neg:#9A3B2F; --neg-soft:#F6E4E1;
+  --pos:#2C6B4B; --mid:#8A6A16; --neg:#9A3B2F; --neg-soft:#F6E4E1; --mid-soft:#F7EBD2;
   --h0:transparent; --h1:#F3E2DE; --h2:#E4BBB3; --h3:#CE8C81; --h4:#B05B4D;
   --hink1:#6B4038; --hink2:#5B2F27; --hink3:#3B1C16; --hink4:#FFFFFF;
   --shadow:0 1px 2px rgba(20,26,32,.06),0 8px 24px -16px rgba(20,26,32,.28);
@@ -15,7 +15,7 @@
   --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
   --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
   --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
-  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F;
+  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F; --mid-soft:#33291A;
   --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
   --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
@@ -24,7 +24,7 @@
   --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
   --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
   --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
-  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F;
+  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F; --mid-soft:#33291A;
   --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
   --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
@@ -165,6 +165,9 @@ tr.grp th{background:var(--sunk);font-family:"IBM Plex Mono",monospace;font-size
 .tag b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
 .tag.bad{background:var(--neg-soft);color:var(--neg)}
 .tag.bad b{color:var(--neg)}
+.tag.warn{background:var(--mid-soft);color:var(--mid)}
+.tag.warn b{color:var(--mid)}
+.est.validar{border-left-color:var(--mid)}
 
 /* --- revisión y descargas --- */
 .rev{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:13px 16px;
@@ -230,7 +233,7 @@ footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-si
   <div id="panelOpciones" hidden>
     <div class="opcFila">
       <label>Nota mínima para aprobar <input type="number" id="umbral" value="60" min="1" max="100" step="1"></label>
-      <label><input type="checkbox" id="ceroSinNota"> Tratar los 0 como «sin nota» en vez de como calificación</label>
+      <label><input type="checkbox" id="sinRegistroCuenta"> No contar las notas sin registrar (ver cómo quedaría el curso si se registran)</label>
     </div>
     <p style="font-size:.9rem">Peso de cada asignatura dentro de su área. Los resaltados son los que se
     corrigieron al abrir el archivo. Si cambiás alguno, todo se recalcula al instante.</p>
@@ -257,6 +260,7 @@ footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-si
     <div class="barraEst">
       <div class="chips" id="tabsPeriodo"></div>
       <label><input type="checkbox" id="soloPierden"> Solo quienes pierden algo</label>
+      <label><input type="checkbox" id="soloSinRegistro"> Solo con notas sin registrar</label>
       <input type="search" id="buscar" placeholder="Buscar estudiante…" aria-label="Buscar estudiante">
       <span class="mut" id="contadorEst"></span>
       <button class="btn ghost sm" id="btnImprimir">Imprimir esta lista</button>
