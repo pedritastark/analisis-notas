@@ -60,18 +60,23 @@ respetando tildes y columnas.
 las fuentes en `src/`.
 
 ```
-python3 src/build.py     # arma index.html desde app_template.html + core.js + ui.js
-node src/smoke.mjs       # prueba el flujo completo contra un consolidado real
+python3 src/build.py                      # arma index.html desde src/ (template + core + charts + ui)
+node src/smoke.mjs ruta/al/consolidado.xlsx   # prueba el flujo completo contra un consolidado real
+python3 -m http.server 8000               # ver la página en http://localhost:8000
 ```
 
 - `src/core.js` — descompresión del .xlsx, lectura del XML, análisis y exportación.
   No usa librerías: descomprime con `DecompressionStream` y parsea el XML con
   expresiones regulares.
+- `src/charts.js` — gráficos en SVG/HTML sin librerías (evolución por estudiante,
+  pérdida por asignatura, mapa de calor, composición de áreas).
 - `src/ui.js` — interfaz y eventos.
+- `src/guia.js` — guía de bienvenida paso a paso.
+- `src/ejemplo.py` → `src/ejemplo.b64` — consolidado de ejemplo **ficticio** que ofrece la guía (estudiantes inventados).
 - `src/app_template.html` — marcado y estilos.
 
 La prueba de humo espera un consolidado real, que por contener datos de estudiantes
-no está en el repositorio; hay que apuntarla a un archivo local.
+no está en el repositorio: se le pasa la ruta como argumento (o en `CONSOLIDADO`).
 
 ## Privacidad
 

@@ -78,7 +78,9 @@ function sheetGrid(xml, sst) {
   for (const row of rows) {
     const rn = +(/\br="(\d+)"/.exec(row) || [0, 0])[1];
     const cells = [];
-    const re = /<c\b([^>]*)(?:\/>|>([\s\S]*?)<\/c>)/g;
+    // los atributos no pueden tragarse la «/» de una celda vacía (<c r="A2" s="1"/>):
+    // si lo hicieran, la celda siguiente quedaría como cuerpo de esta y se perdería
+    const re = /<c\b((?:[^>\/]|\/(?!>))*)(?:\/>|>([\s\S]*?)<\/c>)/g;
     let m;
     while ((m = re.exec(row))) {
       const attrs = m[1], body = m[2] || '';

@@ -1,312 +1,535 @@
-<title>Consolidado a Análisis</title>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%274%27 fill=%27black%27/%3E%3Cpath d=%27M4 11V8m4 3V5m4 6V7%27 stroke=%27white%27 stroke-width=%271.6%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<title>Notas del curso</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
+/* Estética: blanco y negro, tipografía fuerte, separadores finos en vez de cajas. */
 :root{
-  --paper:#EFF1F3; --surface:#FFFFFF; --sunk:#E6E9EC;
-  --ink:#141A20; --ink2:#4C5763; --muted:#828E9A; --rule:#D5DAE0; --rule2:#E7EAEE;
-  --accent:#1D4E6B; --accent-ink:#FFFFFF; --accent-soft:#DCE7EE;
-  --pos:#2C6B4B; --mid:#8A6A16; --neg:#9A3B2F; --neg-soft:#F6E4E1; --mid-soft:#F7EBD2;
-  --h0:transparent; --h1:#F3E2DE; --h2:#E4BBB3; --h3:#CE8C81; --h4:#B05B4D;
-  --hink1:#6B4038; --hink2:#5B2F27; --hink3:#3B1C16; --hink4:#FFFFFF;
-  --shadow:0 1px 2px rgba(20,26,32,.06),0 8px 24px -16px rgba(20,26,32,.28);
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
-  --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
-  --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
-  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F; --mid-soft:#33291A;
-  --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
-  --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
-}}
-:root[data-theme="dark"]{
-  --paper:#11151A; --surface:#181D23; --sunk:#1F262D;
-  --ink:#E6EAEE; --ink2:#AAB5C0; --muted:#7A8794; --rule:#2C343C; --rule2:#232A31;
-  --accent:#7FB6D4; --accent-ink:#0E1418; --accent-soft:#1E2B35;
-  --pos:#63B98C; --mid:#C7A44E; --neg:#DE8478; --neg-soft:#33221F; --mid-soft:#33291A;
-  --h1:#3A2420; --h2:#5A322A; --h3:#7B4136; --h4:#A0523F;
-  --hink1:#E3BDB5; --hink2:#F0C9C0; --hink3:#FBD9D1; --hink4:#FFF1ED;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  --paper:#FFFFFF; --surface:#FFFFFF; --sunk:#F3F3F3; --sunk2:#F7F7F7;
+  --ink:#000000; --ink2:#4B4B4B; --muted:#8A8A8A; --rule:#E2E2E2; --rule2:#EEEEEE;
+  --accent:#000000; --accent-ink:#FFFFFF; --accent-soft:#F1F1F1;
+  --pos:#05944F; --mid:#B86E00; --neg:#D93A1F; --neg-soft:#FDEDEA; --mid-soft:#FFF4E0;
+  --h0:transparent; --h1:#FDE7E2; --h2:#F8BCAE; --h3:#EE8670; --h4:#D23E22;
+  --hink1:#7A2A1B; --hink2:#6B1F11; --hink3:#3D0F06; --hink4:#FFFFFF;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#6250d6; --s8:#e34948;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-size:17.5px;line-height:1.6;
- font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
-h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
- line-height:1.1;margin:.3em 0 .25em;letter-spacing:-.015em;text-wrap:balance}
-h2{font-family:"IBM Plex Serif",Georgia,serif;font-size:1.3rem;font-weight:600;margin:0 0 4px;letter-spacing:-.01em}
-h3{font-size:.95rem;font-weight:600;margin:26px 0 8px}
-h4{margin:0;font-size:1.05rem;font-weight:600}
-p{color:var(--ink2);margin:.6em 0;max-width:70ch}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.55;
+ font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 100px}
+h1{font-size:clamp(2.4rem,6vw,3.6rem);font-weight:700;line-height:1.02;letter-spacing:-.035em;margin:.15em 0 .25em}
+h2{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin:0;line-height:1.2}
+h3{font-size:1.05rem;font-weight:600;letter-spacing:-.01em;margin:0 0 2px}
+h4{margin:0;font-size:1rem;font-weight:600}
+p{color:var(--ink2);margin:.5em 0;max-width:68ch}
+a{color:inherit}
 .mut{color:var(--muted)}
-.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.eyebrow{font-size:.82rem;font-weight:500;color:var(--muted)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .pos{color:var(--pos)} .mid{color:var(--mid)} .neg{color:var(--neg)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:6px}
 
-/* --- pantalla de carga --- */
-#drop{margin:48px 0;border:1px dashed var(--rule);border-radius:4px;background:var(--surface);
- padding:52px 28px;text-align:center;box-shadow:var(--shadow);transition:border-color .15s,background .15s}
-#drop.over{border-color:var(--accent);background:var(--accent-soft)}
-#drop h1{margin-top:.1em}
-#drop p{margin-left:auto;margin-right:auto}
-.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:34px auto 6px;max-width:820px;text-align:left}
-.paso{border-top:2px solid var(--accent);padding-top:10px}
-.paso b{display:block;font-size:.9rem}
-.paso span{font-size:.83rem;color:var(--ink2)}
+/* --- botones y controles --- */
 button{font:inherit;cursor:pointer}
-.btn{background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:3px;
- padding:12px 26px;font-weight:500;font-size:1rem}
-.btn:hover{filter:brightness(1.1)}
-.btn.ghost{background:transparent;color:var(--accent)}
-.btn.ghost:hover{background:var(--accent-soft);filter:none}
-.btn.sm{padding:8px 15px;font-size:.88rem}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
-.msg{margin:18px 0;padding:12px 16px;border-radius:3px;background:var(--surface);border:1px solid var(--rule);
- font-size:.9rem;color:var(--ink2)}
-.msg.err{border-left:3px solid var(--neg);color:var(--neg)}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:13px 22px;font-weight:600;font-size:.95rem;transition:background .15s}
+.btn:hover{background:#2b2b2b}
+.btn.ghost{background:var(--sunk);color:var(--ink)}
+.btn.ghost:hover{background:#e7e7e7}
+.btn.sm{padding:8px 14px;font-size:.85rem;border-radius:8px}
+.btn[disabled]{background:var(--sunk);color:var(--muted);cursor:not-allowed}
+input[type=number],input[type=search],select{font:inherit;font-size:.9rem;background:var(--sunk);color:var(--ink);border:1px solid transparent;
+ border-radius:8px;padding:8px 12px}
+input[type=number]{width:72px;text-align:right}
+input[type=search]{width:220px}
+input[type=search]:focus,input[type=number]:focus,select:focus{outline:none;border-color:var(--ink);background:#fff}
+input[type=checkbox]{accent-color:var(--ink);width:17px;height:17px}
+.msg{margin:10px 0;padding:12px 16px;border-radius:10px;background:var(--sunk);font-size:.9rem;color:var(--ink2)}
+.msg.err{background:var(--neg-soft);color:var(--neg)}
 
-/* --- cabecera de la app --- */
-.appTop{border-bottom:1px solid var(--rule);padding:28px 0 18px;margin-bottom:22px;
- display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;justify-content:space-between}
-.appTop .t{min-width:240px}
-#nombreArchivo{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--muted);word-break:break-all}
-.controles{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:.85rem;color:var(--ink2)}
-.controles label{display:flex;gap:7px;align-items:center;white-space:nowrap}
-input[type=number],input[type=search]{font:inherit;font-family:"IBM Plex Mono",monospace;font-size:.85rem;
- background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:3px;padding:5px 8px}
-input[type=number]{width:66px;text-align:right}
-input[type=search]{width:190px;font-family:inherit}
-input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px}
+/* --- cabecera --- */
+.hero{padding:56px 0 30px}
+.hero .bienv{font-size:1.2rem;color:var(--ink2);margin:0;max-width:60ch;line-height:1.45}
+.hero .bienv b{color:var(--ink);font-weight:600}
+.carga{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:26px}
+.carga .ico{display:none}
+.cargaTxt{min-width:0}
+.cargaTxt b{display:block;font-size:.92rem;font-weight:600}
+.cargaTxt span{display:block;font-size:.84rem;color:var(--muted)}
+.carga.cargando .btn{opacity:.6}
+.carga.over .btn{outline:3px solid var(--ink);outline-offset:3px}
+.carga .btn{order:-1}
+#soltar{position:fixed;inset:0;z-index:40;background:rgba(255,255,255,.88);display:grid;place-items:center;pointer-events:none}
+#soltar div{border:2px dashed var(--ink);border-radius:16px;padding:30px 46px;font-size:1.15rem;font-weight:600}
+#soltar[hidden]{display:none}
 
-.note{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
- border-radius:3px;padding:14px 18px;margin:16px 0;box-shadow:var(--shadow)}
-.note .h{font-family:"IBM Plex Mono",monospace;font-size:.67rem;letter-spacing:.11em;text-transform:uppercase;
- color:var(--accent);margin-bottom:4px}
-.note p{margin:.25em 0;font-size:.9rem}
-
-/* --- panel de opciones --- */
-.opcFila{display:flex;gap:26px;flex-wrap:wrap;align-items:center;padding-bottom:14px;margin-bottom:14px;
- border-bottom:1px solid var(--rule2);font-size:.95rem}
-.opcFila label{display:flex;gap:9px;align-items:center}
-#panelOpciones{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:16px 18px;
- margin:12px 0 4px;box-shadow:var(--shadow)}
-#pesos{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
-.campoTit{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
- color:var(--ink2);margin-bottom:7px;border-bottom:1px solid var(--rule2);padding-bottom:5px;
- display:flex;justify-content:space-between;gap:8px}
-.peso{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;padding:2px 0}
-.peso span{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.peso.fix span{color:var(--ink);font-weight:500}
-.peso.fix input{border-color:var(--accent);background:var(--accent-soft)}
-
-/* --- tabs --- */
-.tabbar{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--rule);margin:26px 0 20px}
-.tabbar button{background:none;border:0;border-bottom:2px solid transparent;padding:11px 16px;
- font-size:.95rem;color:var(--ink2);margin-bottom:-1px}
-.tabbar button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:500}
-.tabbar button:hover{color:var(--ink)}
+/* --- barra fija de periodo --- */
+.barra{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:saturate(1.4) blur(8px);
+ border-bottom:1px solid var(--rule2);margin:0 -32px;padding:0 32px}
+.barraIn{display:flex;gap:10px;align-items:center;padding:12px 0}
+.et2{font-size:.82rem;font-weight:500;color:var(--muted);margin-right:2px}
+.barraIn .chips{flex:1;min-width:0}
+.nav{display:none}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{background:var(--surface);border:1px solid var(--rule);border-radius:99px;padding:4px 13px;font-size:.8rem;color:var(--ink2)}
-.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500}
-.chip.parcial{border-style:dashed}
-.chip .frac{font-family:"IBM Plex Mono",monospace;font-size:.75rem;opacity:.75}
-.note.aviso{border-left-color:var(--mid)}
-.note.aviso .h{color:var(--mid)}
-.tag.prov,.tag i{font-style:normal;font-size:.75rem;opacity:.8}
-.tag i{margin-left:3px}
+.chip{background:var(--sunk);border:0;border-radius:99px;padding:7px 14px;font-size:.85rem;font-weight:500;color:var(--ink);white-space:nowrap}
+.chip:hover{background:#e7e7e7}
+.chip.on{background:var(--ink);color:#fff}
+.chip.parcial{color:var(--ink2)}
+.chip.parcial.on{color:#fff}
+.chip .frac{font-size:.75rem;opacity:.6;margin-left:2px}
+.chip.ph{color:var(--muted)}
+.chip.desc{text-decoration:line-through;color:var(--muted)}
+#panelOpciones{padding:6px 0 18px}
+.opcFila{display:flex;gap:26px;flex-wrap:wrap;align-items:center;padding:6px 0 14px;font-size:.92rem;color:var(--ink2)}
+.opcFila label{display:flex;gap:9px;align-items:center}
+#pesos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 28px}
+.campoTit{font-size:.82rem;font-weight:600;margin:8px 0 4px;display:flex;justify-content:space-between;gap:8px}
+.peso{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.88rem;padding:2px 0}
+.peso span{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peso.fix span{color:var(--ink);font-weight:600}
+.peso.fix input{background:#fff;border-color:var(--ink)}
 
-/* --- KPIs --- */
-#kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin:4px 0 20px}
-.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:15px 17px;box-shadow:var(--shadow)}
-.kpi .k{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.kpi .v{font-family:"IBM Plex Serif",Georgia,serif;font-size:2rem;line-height:1.12;margin-top:5px;
- font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+/* --- avisos: texto suave, sin recuadro --- */
+.note{border-left:2px solid var(--rule);padding:2px 0 2px 14px;margin:16px 0 0;font-size:.88rem}
+.note.aviso{border-left-color:var(--mid)}
+.note .h{font-size:.82rem;font-weight:600;color:var(--ink);margin-bottom:2px}
+.note p{margin:.15em 0;font-size:.88rem;max-width:none}
+.note.aviso .h{color:var(--mid)}
+
+/* --- secciones --- */
+.sec{padding:44px 0 0;scroll-margin-top:70px}
+.secCab{display:flex;gap:14px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.secCab .mut{font-size:.88rem}
+.sub{font-size:.88rem;color:var(--muted);margin:2px 0 16px;max-width:none}
+.grid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px;align-items:start}
+.viz{margin:0}
+.vizCab{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.ley{display:flex;gap:18px;flex-wrap:wrap;font-size:.8rem;color:var(--ink2);margin-top:12px}
+.ley span{display:inline-flex;align-items:center;gap:7px}
+.ley i{display:inline-block;width:18px;height:3px;border-radius:2px}
+.ley i.sq{width:13px;height:13px;border-radius:3px;border:1px solid var(--rule)}
+
+/* --- indicadores: números grandes, sin cajas --- */
+#kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0;border-top:1px solid var(--rule2)}
+.kpi{padding:22px 24px 4px 0}
+.kpi + .kpi{padding-left:24px;border-left:1px solid var(--rule2)}
+.kpi .k{font-size:.86rem;font-weight:500;color:var(--ink2)}
+.kpi .v{font-size:2.9rem;font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-top:6px}
 .kpi .v.warn{color:var(--neg)}
-.kpi .v .de{font-size:.95rem;color:var(--muted);font-family:"IBM Plex Sans",sans-serif}
-.kpi .s{font-size:.8rem;color:var(--ink2);margin-top:3px;font-variant-numeric:tabular-nums}
+.kpi .v .de{font-size:1.05rem;color:var(--muted);font-weight:500;letter-spacing:0}
+.kpi .s{font-size:.8rem;color:var(--muted);margin-top:6px}
 
 /* --- tablas --- */
-.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:3px;
- box-shadow:var(--shadow);margin:14px 0}
+.tablewrap{overflow-x:auto;margin:10px 0}
 table{border-collapse:collapse;width:100%;font-size:.9rem}
-caption{text-align:left;padding:13px 16px 0;font-size:.8rem;color:var(--muted)}
-thead th{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:.64rem;letter-spacing:.09em;
- text-transform:uppercase;color:var(--muted);padding:11px 9px;border-bottom:1px solid var(--rule);
- text-align:right;white-space:nowrap}
+caption{text-align:left;padding:0 0 10px;font-size:.84rem;color:var(--muted)}
+thead th{font-weight:500;font-size:.78rem;color:var(--muted);padding:10px 10px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
 thead th.lbl{text-align:left}
-thead tr.sup th{border-bottom:0;padding-bottom:2px;text-align:center;color:var(--accent)}
+thead tr.sup th{border-bottom:0;padding-bottom:0;text-align:center;color:var(--ink);font-weight:600}
 thead tr.sup th.spacer{border:0}
-tbody th{text-align:left;font-weight:500;padding:6px 9px;color:var(--ink);border-top:1px solid var(--rule2)}
-tbody th.sub{font-weight:400;color:var(--ink2);padding-left:20px}
-td{padding:6px 9px;border-top:1px solid var(--rule2)}
-tr.grp th{background:var(--sunk);font-family:"IBM Plex Mono",monospace;font-size:.63rem;letter-spacing:.11em;
- text-transform:uppercase;color:var(--ink2);padding:7px 9px;border-top:1px solid var(--rule)}
-.heat{border-left:1px solid var(--surface)}
+tbody th{text-align:left;font-weight:500;padding:9px 10px;color:var(--ink);border-top:1px solid var(--rule2)}
+tbody th.sub{font-weight:400;color:var(--ink2);padding-left:22px;margin:0;font-size:.9rem}
+td{padding:9px 10px;border-top:1px solid var(--rule2)}
+tr.grp th{font-size:.8rem;font-weight:600;color:var(--ink);padding:18px 10px 6px;border-top:0}
+.heat{border-left:2px solid #fff}
 .r0{background:var(--h0);color:var(--muted)} .r1{background:var(--h1);color:var(--hink1)}
 .r2{background:var(--h2);color:var(--hink2)} .r3{background:var(--h3);color:var(--hink3)}
 .r4{background:var(--h4);color:var(--hink4);font-weight:600}
 
-/* --- fichas de estudiante --- */
-.barraEst{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:6px 0 14px;font-size:.85rem;color:var(--ink2)}
-#contEst{display:grid;gap:9px}
-.est{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--rule);
- border-radius:3px;padding:12px 15px;box-shadow:var(--shadow)}
-.est.alerta{border-left-color:var(--neg)}
+/* --- lista de estudiantes: filas, no tarjetas --- */
+.barraEst{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:0 0 8px;font-size:.88rem;color:var(--ink2)}
+.barraEst label{display:flex;gap:8px;align-items:center}
+.barraEst #btnImprimir{margin-left:auto}
+#contEst{display:grid}
+.est{padding:18px 0 16px;border-top:1px solid var(--rule2);cursor:pointer}
+.est:hover h4{text-decoration:underline;text-underline-offset:3px}
+.est:last-of-type{border-bottom:1px solid var(--rule2)}
+.est.alerta h4::before,.est.validar h4::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--neg);margin-right:10px;vertical-align:2px}
+.est.validar h4::before{background:var(--mid)}
 .estCab{display:flex;justify-content:space-between;gap:14px;align-items:baseline;flex-wrap:wrap}
-.estNums{font-size:.92rem;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
-.estNums b{font-size:.95rem}
-.estNums .sep{display:inline-block;width:1px;height:11px;background:var(--rule);margin:0 8px;vertical-align:-1px}
+.estNums{font-size:.9rem;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink2)}
+.estNums b{font-size:1rem;font-weight:600}
+.estNums .sep{display:inline-block;width:1px;height:12px;background:var(--rule);margin:0 10px;vertical-align:-1px}
 .linea{display:flex;gap:12px;align-items:baseline;margin-top:8px;flex-wrap:wrap}
-.linea.ok{margin-top:6px;font-size:.83rem;color:var(--muted)}
-.et{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;
- color:var(--muted);min-width:132px}
-.tag{background:var(--sunk);border-radius:3px;padding:3px 10px;font-size:.87rem;color:var(--ink2)}
-.tag b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
+.linea.ok{font-size:.86rem;color:var(--muted)}
+.et{font-size:.8rem;font-weight:500;color:var(--muted);min-width:150px}
+.tag{background:var(--sunk);border-radius:6px;padding:3px 9px;font-size:.85rem;color:var(--ink2)}
+.tag b{font-weight:600;color:var(--ink)}
 .tag.bad{background:var(--neg-soft);color:var(--neg)}
 .tag.bad b{color:var(--neg)}
 .tag.warn{background:var(--mid-soft);color:var(--mid)}
 .tag.warn b{color:var(--mid)}
-.est.validar{border-left-color:var(--mid)}
+.tag.prov,.tag i{font-style:normal;font-size:.75rem;opacity:.8}
+.tag i{margin-left:3px}
+.verMas{justify-self:start;margin-top:16px}
+/* en la lista, lo perdido va como texto: sin etiquetas con fondo */
+#contEst .chips{gap:2px 0}
+#contEst .tag{background:none;padding:0;border-radius:0;font-size:.9rem;color:var(--ink2)}
+#contEst .tag + .tag::before{content:"·";margin:0 8px;color:#C4C4C4;font-weight:400}
+#contEst .tag.bad,#contEst .tag.bad b{color:var(--neg)}
+#contEst .tag.warn,#contEst .tag.warn b{color:var(--mid)}
+#contEst .tag b{font-weight:600}
+#contEst .linea{margin-top:6px;flex-wrap:nowrap}
+#contEst .linea .chips{flex:1;min-width:0}
+@media (max-width:620px){#contEst .linea{flex-wrap:wrap}}
+.filtroAsig{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-/* --- revisión y descargas --- */
-.rev{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:13px 16px;
- margin-bottom:9px;box-shadow:var(--shadow);font-size:.87rem;color:var(--ink2)}
-.revTit{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
- color:var(--accent);margin-bottom:5px}
-.dls{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px;margin-top:14px}
-.dl{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:15px 17px;box-shadow:var(--shadow);
- display:flex;flex-direction:column;gap:8px;align-items:flex-start}
-.dl b{font-size:.92rem}
-.dl span{font-size:.83rem;color:var(--ink2);flex:1}
-#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);
- padding:10px 18px;border-radius:3px;font-size:.85rem;box-shadow:0 8px 30px -8px rgba(0,0,0,.5);z-index:20;max-width:min(92vw,560px)}
-footer{border-top:1px solid var(--rule);margin-top:38px;padding-top:16px;font-size:.78rem;color:var(--muted);max-width:74ch}
-@media (max-width:620px){.wrap{padding:0 14px 70px}.et{min-width:100%}}
+/* --- gráficos --- */
+.chart{position:relative;touch-action:pan-y}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .grid{stroke:var(--rule2);stroke-width:1}
+.chart .ax{fill:var(--muted);font:500 11px Inter,system-ui,sans-serif}
+.chart .axSel{fill:var(--ink);font-weight:700}
+.chart .perSel{fill:var(--sunk2)}
+.chart .umbral{stroke:var(--neg);stroke-width:1.5;stroke-dasharray:5 4}
+.chart .umbralT{fill:var(--neg)}
+.ln{fill:none;stroke:#C9C9C9;stroke-width:1.25;opacity:.7;stroke-linejoin:round;stroke-linecap:round}
+.ln.risk{stroke:var(--neg);opacity:.7;stroke-width:1.75}
+.ln.sel{stroke:var(--ink);opacity:1;stroke-width:3}
+.pt{fill:#C9C9C9;stroke:#fff;stroke-width:2}
+.pt.risk{fill:var(--neg)}
+.pt.sel{fill:var(--ink)}
+.chart.hovering .ln:not(.hov),.chart.hovering .pt:not(.hov){opacity:.12}
+.chart .ln.hov{opacity:1;stroke-width:3}
+.chart .pt.hov{opacity:1}
+.lblSel{fill:var(--ink);font:600 12px Inter,system-ui,sans-serif}
+.grpT{fill:var(--ink);font:600 11.5px Inter,system-ui,sans-serif}
+.blbl{fill:var(--ink2);font:13px Inter,system-ui,sans-serif}
+.bar{cursor:pointer;outline:none}
+.bar .hit{fill:transparent}
+.bar:hover .hit,.bar:focus-visible .hit{fill:var(--sunk2)}
+.bar:focus-visible .hit{stroke:var(--ink);stroke-width:2}
+.bar .track{fill:var(--sunk)}
+.bar .fill{fill:var(--neg)}
+.bar .val{fill:var(--ink);font:600 12px Inter,system-ui,sans-serif}
+#tip{position:fixed;z-index:30;pointer-events:none;background:#000;color:#fff;border-radius:10px;padding:10px 13px;
+ font-size:.8rem;line-height:1.45;max-width:340px;box-shadow:0 10px 30px -10px rgba(0,0,0,.45)}
+#tip b{display:block;font-size:.88rem}
+#tip strong{font-weight:700}
+#tip .mut{color:#a8a8a8;font-size:.75rem}
+#tip .neg{color:#ff8a73} #tip .pos{color:#5fd39a} #tip .mid{color:#ffc46b}
+
+/* --- ficha del estudiante --- */
+#detalleEst{border-left:1px solid var(--rule2);padding-left:32px;min-height:100%}
+#detalleEst .cab{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+#detalleEst h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em}
+#detalleEst table{font-size:.86rem;margin-top:8px}
+#detalleEst .tablewrap{margin:12px 0}
+#detalleEst .linea .et{min-width:80px}
+#detalleEst .estNums{white-space:normal;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:baseline}
+#detalleEst .estNums .btn{margin-left:auto!important}
+#detalleEst .vacioFicha{display:grid;place-items:center;text-align:center;min-height:300px;color:var(--muted);font-size:.9rem}
+#detalleEst .vacioFicha svg{width:36px;height:36px;fill:none;stroke:#cfcfcf;stroke-width:1.6;margin:0 auto 10px;display:block}
+
+/* --- más detalles --- */
+.plegable{border-top:1px solid var(--rule2);margin:0}
+.plegable:last-of-type{border-bottom:1px solid var(--rule2)}
+.plegable > summary{cursor:pointer;padding:20px 0;font-weight:600;font-size:1.02rem;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.plegable > summary::-webkit-details-marker{display:none}
+.plegable > summary::after{content:"+";font-size:1.4rem;font-weight:400;line-height:1;color:var(--ink2)}
+.plegable[open] > summary::after{content:"–"}
+.plegable > summary .mut{font-weight:400;font-size:.88rem;margin-left:8px}
+.plegable > .cuerpo{padding:0 0 28px}
+.infoArch{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin:0 0 8px}
+.infoArch .k{font-size:.8rem;font-weight:500;color:var(--muted)}
+.infoArch .v{font-size:1.02rem;font-weight:600;word-break:break-word}
+#composicion{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px 40px}
+.compCab{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:.95rem}
+.compCab span{font-size:.8rem}
+.stack{display:flex;gap:2px;height:10px;margin:10px 0;border-radius:99px;overflow:hidden}
+.stack span{display:block;height:100%;min-width:3px}
+.compFila{display:grid;grid-template-columns:10px 1fr auto;gap:2px 10px;align-items:center;font-size:.88rem;padding:2px 0;color:var(--ink2)}
+.compFila .sw{width:10px;height:10px;border-radius:50%}
+.compFila .pc{font-weight:600;color:var(--ink)}
+.compFila.fix span:nth-of-type(1){font-weight:600;color:var(--ink)}
+.compFila .antes{grid-column:2/4;font-size:.78rem;color:var(--mid)}
+.prev table{font-size:.76rem}
+.prev th,.prev td{white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis;padding:5px 8px;text-align:left}
+.prev thead th{text-align:center;font-size:.7rem}
+.prev .rn{color:var(--muted);text-align:right;font-weight:400}
+.prev td.n{text-align:right;font-variant-numeric:tabular-nums}
+.prev tr.fCab td{color:var(--ink);font-weight:500}
+.prev tr.fPeso td{background:var(--sunk);color:var(--ink);font-weight:700}
+.prev td.cArea{background:var(--sunk2)}
+.prev td.cNom{color:var(--ink)}
+.calor tbody tr{cursor:pointer}
+.calor tbody tr:hover th{text-decoration:underline;text-underline-offset:3px}
+.calor tr.sel th{font-weight:700}
+.calor thead th{white-space:normal;vertical-align:bottom;max-width:110px}
+.calor td.na{color:var(--muted)}
+.calor td.pv{box-shadow:inset 0 0 0 2px var(--mid)}
+.rev{padding:12px 0;border-top:1px solid var(--rule2);font-size:.88rem;color:var(--ink2)}
+.revTit{font-size:.84rem;font-weight:600;color:var(--ink);margin-bottom:3px}
+
+/* --- descargas --- */
+.dls{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0;border-top:1px solid var(--rule2)}
+.dl{display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding:20px 24px 8px 0}
+.dl + .dl{padding-left:24px;border-left:1px solid var(--rule2)}
+.dl b{font-size:.95rem;font-weight:600}
+.dl span{font-size:.84rem;color:var(--muted);flex:1}
+.dl .btn{margin-top:8px}
+
+/* --- espacios reservados antes de cargar --- */
+.ph{color:#CFCFCF}
+.sk{display:block;background:var(--sunk);border-radius:6px;animation:brillo 1.6s ease-in-out infinite}
+@keyframes brillo{50%{opacity:.5}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+.ghost{position:relative}
+.ghost svg{display:block;width:100%;height:auto}
+.ghost .g{fill:var(--sunk);stroke:none}
+.ghost .gl{fill:none;stroke:#E4E4E4;stroke-width:2;stroke-linecap:round}
+.ghost .msgG{position:absolute;inset:0;display:grid;place-items:center;font-size:.86rem;color:var(--muted)}
+.ghost .msgG span{background:#fff;padding:6px 14px;border-radius:99px}
+
+/* --- celular --- */
+.btn.ico svg{display:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.verFicha{display:none}
+#velo{position:fixed;inset:0;z-index:54;background:rgba(0,0,0,.4)}
+#velo[hidden]{display:none}
+.calor tbody th[scope=row]{position:sticky;left:0;background:#fff;z-index:1}
+@media (max-width:620px){
+  body{font-size:15.5px}
+  h2{font-size:1.3rem}
+  .sec{padding-top:36px}
+  .sub{font-size:.85rem}
+  /* barra superior: periodos con desplazamiento y botones de ícono */
+  .barraIn{gap:6px}
+  .btn.ico{padding:0;width:42px;height:42px;display:grid;place-items:center;border-radius:12px}
+  .btn.ico .txt{display:none}
+  .btn.ico svg{display:block}
+  .chip{padding:10px 14px;font-size:.88rem}
+  /* objetivos táctiles cómodos */
+  .btn.sm{padding:11px 16px}
+  .barraEst label{min-height:40px}
+  input[type=checkbox]{width:20px;height:20px}
+  select{padding:10px 12px}
+  #btnImprimir{display:none}
+  /* lista: fila compacta, el detalle va en la ficha */
+  #contEst .lAsig,#contEst .linea .et{display:none}
+  #contEst .linea{flex-wrap:wrap}
+  .est{padding:16px 0 14px}
+  .estCab{gap:4px}
+  .estCab h4{font-size:1rem;flex-basis:100%}
+  .verFicha{display:block;margin-top:8px;font-size:.84rem;font-weight:600;color:var(--ink)}
+  .verMas{width:100%}
+  /* ficha como hoja desde abajo */
+  #detalleEst.vacia{display:none}
+  #detalleEst.hoja{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:55;min-height:0;max-height:82vh;overflow:auto;background:#fff;
+    border:0;border-radius:20px 20px 0 0;padding:14px 18px 28px;box-shadow:0 -20px 60px -10px rgba(0,0,0,.35);
+    animation:subir .22s ease-out;-webkit-overflow-scrolling:touch}
+  #detalleEst.hoja::before{content:"";display:block;width:40px;height:4px;border-radius:4px;background:#d6d6d6;margin:0 auto 12px}
+  #detalleEst.hoja .cab{position:sticky;top:-14px;background:#fff;padding:6px 64px 8px 0;z-index:2}
+  #detalleEst.hoja .estNums .btn{position:absolute;top:6px;right:0;margin:0!important}
+  /* descargas: una fila por archivo, sin descripción */
+  .dl{flex-direction:row;align-items:center;justify-content:space-between;padding:14px 0}
+  .dl span{display:none}
+  .dl .btn{margin-top:0;flex:none}
+  .infoArch{grid-template-columns:1fr 1fr}
+  footer{margin-top:40px}
+}
+@keyframes subir{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){#detalleEst.hoja{animation:none}}
+
+/* --- guía --- */
+#guiaModal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:18px}
+#guiaModal[hidden],#guiaFoco[hidden],#guiaPop[hidden]{display:none}
+.guiaCaja{background:#fff;border-radius:18px;padding:30px 30px 24px;max-width:470px;width:100%;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+.guiaCaja h2{font-size:1.7rem;letter-spacing:-.03em;margin:.2em 0 .3em}
+.guiaAcciones{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+#guiaFoco{position:fixed;z-index:45;border-radius:14px;pointer-events:none;box-shadow:0 0 0 2px #000,0 0 0 200vmax rgba(0,0,0,.42);
+ transition:top .25s ease,left .25s ease,width .25s ease,height .25s ease}
+#guiaPop{position:fixed;z-index:46;width:min(380px,calc(100vw - 24px));background:#fff;border-radius:16px;padding:18px 20px 16px;
+ box-shadow:0 24px 60px -16px rgba(0,0,0,.5)}
+#guiaPop h3{font-size:1.15rem;font-weight:700;letter-spacing:-.02em;margin:2px 0 4px}
+#guiaPop p{font-size:.9rem;margin:.3em 0}
+#guiaPop .guiaAcciones{margin-top:10px}
+.guiaN{font-size:.78rem;font-weight:500;color:var(--muted)}
+.guiaNav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.guiaNav span{display:flex;gap:8px}
+.link{background:none;border:0;padding:0;color:var(--ink);font-weight:600;font-size:.86rem;text-decoration:underline;text-underline-offset:3px}
+@media (prefers-reduced-motion:reduce){#guiaFoco{transition:none}}
+@media print{#guiaModal,#guiaFoco,#guiaPop{display:none!important}}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000;color:#fff;
+ padding:12px 20px;border-radius:12px;font-size:.88rem;z-index:60;max-width:min(92vw,560px)}
+footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--rule2);font-size:.8rem;color:var(--muted);max-width:none}
+
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr);gap:36px}#detalleEst{border-left:0;padding-left:0;border-top:1px solid var(--rule2);padding-top:24px}}
+@media (max-width:620px){
+  .wrap{padding:0 18px 70px}
+  .barra{margin:0 -18px;padding:0 18px}
+  .barraIn .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth}
+  .barraIn .chips::-webkit-scrollbar{display:none}
+  .et2{display:none}
+  .hero{padding:36px 0 20px}
+  .kpi,.kpi + .kpi,.dl,.dl + .dl{padding-left:0;border-left:0;border-top:1px solid var(--rule2)}
+  #kpis,.dls{border-top:0}
+  #kpis{grid-template-columns:1fr 1fr;column-gap:16px}
+  .kpi,.kpi + .kpi{padding:16px 0 6px}
+  .kpi .v{font-size:2.2rem}
+  .et{min-width:100%}
+  .barraEst #btnImprimir{margin-left:0}
+  input[type=search]{width:100%}
+}
 @media print{
-  :root{--paper:#fff;--surface:#fff;--sunk:#f2f2f2;--ink:#000;--ink2:#333;--muted:#666;--rule:#bbb;--rule2:#ddd}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .tabbar,.controles,#panelOpciones,.barraEst,#toast,#drop,.dls,footer .noprint,#btnImprimir{display:none!important}
-  .panel[hidden]{display:none!important}
-  .appTop{border-bottom:1px solid #000;margin-bottom:12px}
-  .est{break-inside:avoid;page-break-inside:avoid;box-shadow:none;border-left-width:2px}
-  .kpi,.rev,.tablewrap{box-shadow:none}
+  .barra,.carga,#soltar,#tip,#toast,.barraEst,.vizCab select,.plegable:not([open]),.dls,.verMas{display:none!important}
+  .hero{padding:0 0 8px}
+  .imprimir-lista .hero,.imprimir-lista .note,.imprimir-lista .sec:not(#sec-estudiantes),.imprimir-lista footer{display:none!important}
+  .est{break-inside:avoid}
   .wrap{max-width:100%;padding:0}
-  a{text-decoration:none;color:#000}
 }
 </style>
+</head>
+<body>
+<div class="wrap" id="app">
 
-<div class="wrap">
-
-<div id="drop">
-  <div class="eyebrow">Consolidado de notas por periodo</div>
-  <h1>Análisis del consolidado</h1>
-  <p style="font-size:1.05rem">Abrí acá el archivo de Excel del curso y la página arma sola el análisis:
-  quién va perdiendo qué, en qué asignatura y con qué nota.</p>
-  <p><button class="btn" id="btnElegir">Elegir archivo .xlsx</button>
-     <input type="file" id="file" accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></p>
-  <p class="mut" style="font-size:.92rem">También podés arrastrar el archivo hasta este recuadro.<br>El archivo se lee dentro de tu computador: no se sube a internet ni queda guardado en ningún lado.</p>
-  <div class="pasos">
-    <div class="paso"><b>1 · Lee el archivo</b><span>Toma todas las hojas de periodo y deja por fuera las que están sin diligenciar.</span></div>
-    <div class="paso"><b>2 · Corrige la ponderación</b><span>Ciencias 0,50 · PreFísica 0,17 · Tecnología 0,33, y vuelve a calcular la nota de cada área.</span></div>
-    <div class="paso"><b>3 · Muestra lo perdido</b><span>Estudiante por estudiante: las áreas y las asignaturas que quedan por debajo de 60.</span></div>
-    <div class="paso"><b>4 · Se lleva a Excel</b><span>Listas descargables para actas, o directo a la impresora.</span></div>
+<header class="hero">
+  <div class="eyebrow" id="fecha">Consolidado de notas por periodo</div>
+  <h1 id="saludo">Hola, Liliana.</h1>
+  <p class="bienv" id="bienvenida">Bienvenida de nuevo. Cargá el consolidado del curso y acá vas a ver quién va perdiendo y en qué.</p>
+  <div class="carga" id="drop">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/></svg>
+    <div class="cargaTxt">
+      <b id="cargaTit">Ningún archivo cargado</b>
+      <span id="cargaSub">También podés arrastrar el .xlsx a cualquier parte de la página</span>
+    </div>
+    <button class="btn" id="btnElegir">Cargar consolidado</button>
+    <input type="file" id="file" accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
   </div>
-</div>
+</header>
 
 <div id="msg" class="msg" hidden></div>
 
-<div id="app" hidden>
-  <div class="appTop">
-    <div class="t">
-      <h2 id="subtitulo"></h2>
-      <div id="nombreArchivo"></div>
-    </div>
-    <div class="controles">
-      <button class="btn ghost sm" id="btnOtro">Abrir otro archivo</button>
-      <button class="btn ghost sm" id="toggleOpciones" aria-expanded="false">Opciones avanzadas</button>
-    </div>
+<div class="barra">
+  <div class="barraIn">
+    <span class="et2">Periodo</span>
+    <div class="chips" id="tabsPeriodo"></div>
+    <button class="btn ghost sm ico" id="btnGuia" aria-label="Guía"><span class="txt">Guía</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.4M12 17h.01"/></svg></button>
+    <button class="btn ghost sm ico" id="toggleOpciones" aria-expanded="false" aria-label="Ajustes"><span class="txt">Ajustes</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
   </div>
-
-  <div id="avisoPesos" class="note" hidden></div>
-
   <div id="panelOpciones" hidden>
     <div class="opcFila">
       <label>Nota mínima para aprobar <input type="number" id="umbral" value="60" min="1" max="100" step="1"></label>
-      <label><input type="checkbox" id="sinRegistroCuenta"> No contar las notas sin registrar (ver cómo quedaría el curso si se registran)</label>
+      <label><input type="checkbox" id="sinRegistroCuenta"> No contar las notas sin registrar</label>
     </div>
-    <p style="font-size:.9rem">Peso de cada asignatura dentro de su área. Los resaltados son los que se
-    corrigieron al abrir el archivo. Si cambiás alguno, todo se recalcula al instante.</p>
-    <div id="pesos"></div>
+    <p style="font-size:.88rem">Peso de cada asignatura dentro de su área. Los marcados se corrigieron al abrir el archivo.</p>
+    <div id="pesos"><p class="mut" style="font-size:.88rem">Los pesos aparecen al cargar el archivo.</p></div>
   </div>
-
-  <div class="tabbar">
-    <button data-tab="resumen" class="on">Resumen del curso</button>
-    <button data-tab="estudiantes">Qué pierde cada estudiante</button>
-    <button data-tab="asignaturas">Promedios por asignatura</button>
-    <button data-tab="revision">Revisión del archivo</button>
-    <button data-tab="descargas">Descargar e imprimir</button>
-  </div>
-
-  <section class="panel" id="panel-resumen">
-    <div id="avisoDigitacion" class="note aviso" hidden></div>
-    <div id="kpis"></div>
-    <div class="tablewrap" id="tablaAreas"></div>
-    <p class="mut" style="font-size:.82rem">El color de la columna «% pierde» va de claro a intenso según cuántos
-    estudiantes están por debajo de la nota mínima.</p>
-  </section>
-
-  <section class="panel" id="panel-estudiantes" hidden>
-    <div class="barraEst">
-      <div class="chips" id="tabsPeriodo"></div>
-      <label><input type="checkbox" id="soloPierden"> Solo quienes pierden algo</label>
-      <label><input type="checkbox" id="soloSinRegistro"> Solo con notas sin registrar</label>
-      <input type="search" id="buscar" placeholder="Buscar estudiante…" aria-label="Buscar estudiante">
-      <span class="mut" id="contadorEst"></span>
-      <button class="btn ghost sm" id="btnImprimir">Imprimir esta lista</button>
-    </div>
-    <div id="avisoPeriodo" class="note aviso" hidden></div>
-    <div id="contEst"></div>
-  </section>
-
-  <section class="panel" id="panel-asignaturas" hidden>
-    <div class="tablewrap" id="tablaAsig"></div>
-  </section>
-
-  <section class="panel" id="panel-revision" hidden>
-    <p>Controles automáticos sobre el archivo cargado. No cambian los resultados: señalan lo que conviene verificar
-    antes de llevar estas cifras a comisión de evaluación.</p>
-    <div id="revision"></div>
-  </section>
-
-  <section class="panel" id="panel-descargas" hidden>
-    <p>Los archivos se descargan en formato CSV, que Excel abre con doble clic. Si lo que necesitás es la lista
-    en papel, andá a «Qué pierde cada estudiante» y usá el botón <b>Imprimir esta lista</b>: sale una hoja por
-    periodo con cada estudiante y lo que va perdiendo.</p>
-    <div class="dls">
-      <div class="dl"><b>Áreas y asignaturas perdidas</b>
-        <span>Una fila por estudiante y periodo, con el detalle de qué pierde y con qué nota. Es el listado para actas.</span>
-        <button class="btn sm" data-export="perdidas">Descargar CSV</button></div>
-      <div class="dl"><b>Consolidado por estudiante</b>
-        <span>Promedio y número de áreas perdidas en cada periodo, más el promedio global y la variación.</span>
-        <button class="btn sm" data-export="consolidado">Descargar CSV</button></div>
-      <div class="dl"><b>Resumen por área y asignatura</b>
-        <span>Promedio y porcentaje de pérdida de cada área y asignatura en todos los periodos.</span>
-        <button class="btn sm" data-export="resumen">Descargar CSV</button></div>
-      <div class="dl"><b>Detalle nota por nota</b>
-        <span>Formato largo: estudiante, periodo, asignatura, nota, peso aplicado y estado. Para tablas dinámicas.</span>
-        <button class="btn sm" data-export="detalle">Descargar CSV</button></div>
-    </div>
-  </section>
-
-  <footer>
-    Las notas de área se recalculan como suma ponderada de las asignaturas con los pesos vigentes; si activás
-    «tratar 0 como sin nota», esas asignaturas se excluyen y el peso se reparte entre las demás. Nada se envía a
-    ningún servidor: el archivo se lee y se procesa dentro de tu navegador.
-  </footer>
 </div>
 
+<div id="avisoPesos" class="note" hidden></div>
+<div id="avisoDigitacion" class="note aviso" hidden></div>
+
+<section class="sec" id="sec-resumen">
+  <div class="secCab"><h2>Resumen</h2><span class="mut" id="subtitulo">Sin archivo cargado</span></div>
+  <div id="kpis"></div>
+</section>
+
+<section class="sec" id="sec-estudiantes">
+  <div class="secCab"><h2>Quiénes van perdiendo</h2><span class="mut" id="contadorEst"></span></div>
+  <div class="barraEst">
+    <input type="search" id="buscar" placeholder="Buscar estudiante" aria-label="Buscar estudiante">
+    <label><input type="checkbox" id="soloPierden" checked> Solo quienes pierden algo</label>
+    <label><input type="checkbox" id="soloSinRegistro"> Solo con notas sin registrar</label>
+    <span class="filtroAsig" id="filtroAsig" hidden></span>
+    <button class="btn ghost sm" id="btnImprimir">Imprimir lista</button>
+  </div>
+  <div id="avisoPeriodo" class="note aviso" hidden></div>
+  <div id="contEst"></div>
+</section>
+
+<section class="sec" id="sec-asignaturas">
+  <div class="secCab"><h2 id="tituloBarras">Dónde se pierde más</h2></div>
+  <p class="sub">Porcentaje de estudiantes con nota bajo el mínimo en cada asignatura. Tocá una barra para ver quiénes la pierden.</p>
+  <div class="chart" id="chBarras"></div>
+</section>
+
+<section class="sec" id="sec-graficos">
+  <div class="grid2">
+    <div class="viz">
+      <div class="vizCab"><h2>Evolución</h2>
+        <select id="vizMetrica" aria-label="Nota que se grafica"><option value="promedio">Promedio general</option></select></div>
+      <p class="sub">Una línea por estudiante. En rojo, quienes pierden algo en el periodo elegido. Tocá un punto para ver su ficha.</p>
+      <div class="chart" id="chLineas"></div>
+      <div class="ley" id="leyLineas"></div>
+    </div>
+    <div class="viz" id="detalleEst"></div>
+  </div>
+</section>
+
+<section class="sec" id="sec-descargas">
+  <div class="secCab"><h2>Descargas</h2><span class="mut">Archivos que Excel abre con doble clic</span></div>
+  <div class="dls">
+    <div class="dl"><b>Áreas y asignaturas perdidas</b>
+      <span>El listado para actas: qué pierde cada estudiante y con qué nota.</span>
+      <button class="btn sm" data-export="perdidas" disabled>Descargar</button></div>
+    <div class="dl"><b>Consolidado por estudiante</b>
+      <span>Promedio y áreas perdidas por periodo, con la variación.</span>
+      <button class="btn sm ghost" data-export="consolidado" disabled>Descargar</button></div>
+    <div class="dl"><b>Resumen por área</b>
+      <span>Promedio y % de pérdida de cada área y asignatura.</span>
+      <button class="btn sm ghost" data-export="resumen" disabled>Descargar</button></div>
+    <div class="dl"><b>Detalle nota por nota</b>
+      <span>Formato largo, para tablas dinámicas.</span>
+      <button class="btn sm ghost" data-export="detalle" disabled>Descargar</button></div>
+  </div>
+</section>
+
+<section class="sec" id="sec-archivo">
+  <div class="secCab"><h2>Más detalles</h2><span class="mut">El archivo se lee en tu computador: no se sube a internet</span></div>
+  <details class="plegable"><summary>Mapa de calor por estudiante y área</summary>
+    <div class="cuerpo"><p class="sub">Ordenado de quien pierde más áreas a quien menos. Tocá una fila para ver la ficha.</p>
+    <div class="tablewrap" id="chCalor"></div><div class="ley" id="leyCalor"></div></div></details>
+  <details class="plegable"><summary>Nota de cada área por periodo</summary>
+    <div class="cuerpo"><div class="tablewrap" id="tablaAreas"></div></div></details>
+  <details class="plegable"><summary>Promedios por asignatura</summary>
+    <div class="cuerpo"><div class="tablewrap" id="tablaAsig"></div></div></details>
+  <details class="plegable"><summary>Cómo se compone cada área</summary>
+    <div class="cuerpo"><p class="sub">Peso de cada asignatura en la nota del área. Se cambian en «Ajustes».</p>
+    <div id="composicion"></div></div></details>
+  <details class="plegable"><summary>El archivo cargado</summary>
+    <div class="cuerpo"><div class="infoArch" id="infoArchivo"></div>
+    <p class="sub" style="margin-top:18px">Primeras filas de cada hoja tal como vienen en el Excel. Resaltada, la fila de pesos detectada. Las hojas tachadas se descartaron.</p>
+    <div class="chips" id="hojasPrev"></div>
+    <div class="tablewrap prev" id="vistaPrevia"></div></div></details>
+  <details class="plegable" id="plegRevision"><summary><span>Revisión automática <span class="mut" id="nRevision"></span></span></summary>
+    <div class="cuerpo"><p class="sub">Lo que conviene verificar antes de llevar estas cifras a comisión de evaluación.</p>
+    <div id="revision"></div></div></details>
+</section>
+
+<footer>
+  Las notas de área se recalculan como suma ponderada de las asignaturas con los pesos vigentes. Nada se envía a
+  ningún servidor: el archivo se lee y se procesa dentro de tu navegador.
+</footer>
+
 <div id="toast" hidden></div>
+<div id="tip" role="tooltip" hidden></div>
+<div id="soltar" hidden><div>Soltá el archivo para cargarlo</div></div>
+
+<div id="velo" hidden></div>
+<div id="guiaModal" hidden>
+  <div class="guiaCaja" role="dialog" aria-modal="true" aria-labelledby="guiaTit">
+    <div class="eyebrow">Primera vez acá</div>
+    <h2 id="guiaTit">¿Querés una guía rápida?</h2>
+    <p>Te muestro la página en 1 minuto, con un archivo de ejemplo.</p>
+    <div class="guiaAcciones"><button class="btn" id="guiaSi">Sí, mostrame</button>
+      <button class="btn ghost" id="guiaNo">No, gracias</button></div>
+    <p class="mut" style="font-size:.82rem;margin-top:14px">Siempre está en el botón «Guía».</p>
+  </div>
+</div>
+<div id="guiaFoco" hidden></div>
+<div id="guiaPop" role="dialog" aria-live="polite" hidden></div>
 </div>
 
 <script>
@@ -390,7 +613,9 @@ function sheetGrid(xml, sst) {
   for (const row of rows) {
     const rn = +(/\br="(\d+)"/.exec(row) || [0, 0])[1];
     const cells = [];
-    const re = /<c\b([^>]*)(?:\/>|>([\s\S]*?)<\/c>)/g;
+    // los atributos no pueden tragarse la «/» de una celda vacía (<c r="A2" s="1"/>):
+    // si lo hicieran, la celda siguiente quedaría como cuerpo de esta y se perdería
+    const re = /<c\b((?:[^>\/]|\/(?!>))*)(?:\/>|>([\s\S]*?)<\/c>)/g;
     let m;
     while ((m = re.exec(row))) {
       const attrs = m[1], body = m[2] || '';
@@ -733,6 +958,236 @@ function csvConsolidado(res) {
 
 
 /* ============================================================================
+   Gráficos sin librerías: SVG y tablas HTML. Cada función recibe un contenedor
+   y datos ya calculados por analizar(). Los colores salen de variables CSS, así
+   que respetan el modo claro y el oscuro. Los eventos se enganchan al contenedor
+   y solo tocan el DOM cuando ocurren (la prueba de humo no los dispara).
+   ==========================================================================*/
+
+const anchoDe = el => Math.max(320, Math.round((el && el.clientWidth) || 760));
+const coma = v => String(v).replace('.', ',');
+const recortar = (s, n) => (s.length > n ? s.slice(0, Math.max(1, n - 1)) + '…' : s);
+/** «CAMPO CIENCIA Y TECNOLOGÍA» → «Ciencia y Tecnología»: sin el prefijo y sin gritar en mayúsculas. */
+const MENORES = new Set(['y', 'e', 'de', 'del', 'la', 'las', 'los', 'el', 'en', 'para']);
+const tipoTitulo = s => (s === s.toUpperCase() && /[A-ZÁÉÍÓÚÑ]/.test(s)
+  ? s.toLowerCase().split(' ').map((w, i) => (i && MENORES.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(' ')
+  : s);
+const nombreCorto = s => tipoTitulo(String(s).replace(/^(campo|área|area)\s+(de\s+|del\s+)?/i, ''));
+
+/* ---------- tooltip compartido ---------- */
+
+function tipMostrar(html, x, y) {
+  const t = $('#tip');
+  t.innerHTML = html;
+  t.hidden = false;
+  const r = t.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let left = x + 14, top = y + 14;
+  if (left + r.width > vw - 8) left = x - r.width - 14;
+  if (top + r.height > vh - 8) top = y - r.height - 14;
+  t.style.left = Math.max(8, left) + 'px';
+  t.style.top = Math.max(8, top) + 'px';
+}
+function tipOcultar() { const t = $('#tip'); if (t) t.hidden = true; }
+
+/* ---------- líneas: evolución de cada estudiante ---------- */
+
+/**
+ * @param {Object} o
+ *   periodos: nombres de periodo (eje X)
+ *   series:   [{nombre, valores:[nota|null por periodo], riesgo, sel}]
+ *   umbral, periodoSel (índice resaltado), tip(k, j) → html, onSelect(k, j)
+ */
+function chartLineas(cont, o) {
+  const { periodos, series, umbral, periodoSel } = o;
+  const W = anchoDe(cont), angosto = W < 560;
+  const H = Math.round(Math.min(400, Math.max(270, W * 0.46)));
+  const m = { l: 38, r: angosto ? 16 : 150, t: 16, b: 34 };
+  const pw = W - m.l - m.r, ph = H - m.t - m.b, n = periodos.length;
+  const vals = series.flatMap(s => s.valores).filter(v => v !== null);
+  if (!vals.length) { cont.innerHTML = '<p class="mut">No hay notas para graficar.</p>'; return; }
+
+  const lo = Math.max(0, Math.floor((Math.min(umbral, ...vals) - 5) / 10) * 10);
+  const hi = Math.max(umbral + 10, Math.ceil(Math.max(...vals) / 10) * 10);
+  const y = v => m.t + ph - ((v - lo) / (hi - lo)) * ph;
+  const xBase = j => m.l + (n === 1 ? pw / 2 : (j * pw) / (n - 1));
+  // con un solo periodo los puntos se reparten en franja para que no se tapen
+  const x = (j, k) => xBase(j) + (n === 1 ? ((((k * 37) % 41) - 20) / 20) * Math.min(pw * 0.38, 160) : 0);
+
+  let fondo = '';
+  if (n > 1 && periodoSel != null) {
+    const bw = Math.min(56, pw / (n - 1) / 2);
+    fondo += `<rect class="perSel" x="${(xBase(periodoSel) - bw / 2).toFixed(1)}" y="${m.t}" width="${bw.toFixed(1)}" height="${ph}" rx="4"/>`;
+  }
+  for (let v = lo; v <= hi; v += 10)
+    fondo += `<line class="grid" x1="${m.l}" x2="${m.l + pw}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>` +
+             `<text class="ax" x="${m.l - 8}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${v}</text>`;
+  periodos.forEach((p, j) => {
+    const anchor = n > 1 && j === 0 ? 'start' : n > 1 && j === n - 1 ? 'end' : 'middle';
+    fondo += `<text class="ax${j === periodoSel ? ' axSel' : ''}" x="${xBase(j).toFixed(1)}" y="${H - 10}" text-anchor="${anchor}">${esc(recortar(p, 18))}</text>`;
+  });
+  fondo += `<line class="umbral" x1="${m.l}" x2="${m.l + pw}" y1="${y(umbral).toFixed(1)}" y2="${y(umbral).toFixed(1)}"/>` +
+           `<text class="ax umbralT" x="${m.l + 6}" y="${(y(umbral) - 6).toFixed(1)}">mínimo ${coma(umbral)}</text>`;
+
+  const rango = s => (s.sel ? 2 : s.riesgo ? 1 : 0);
+  const orden = series.map((s, k) => k).sort((a, b) => rango(series[a]) - rango(series[b]));
+  const pts = [];
+  let lineas = '', puntos = '', etiquetas = '';
+  for (const k of orden) {
+    const s = series[k], cls = s.sel ? 'sel' : s.riesgo ? 'risk' : 'ok';
+    let d = '', pen = false, ultimo = null;
+    s.valores.forEach((v, j) => {
+      if (v === null) { pen = false; return; }
+      const px = x(j, k), py = y(v);
+      d += (pen ? 'L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1);
+      pen = true;
+      ultimo = { px, py };
+      pts.push({ px, py, k, j });
+      puntos += `<circle class="pt ${cls}" data-k="${k}" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${s.sel ? 5.5 : 4}"/>`;
+    });
+    if (n > 1) lineas += `<path class="ln ${cls}" data-k="${k}" d="${d}"/>`;
+    if (s.sel && ultimo && !angosto)
+      etiquetas += `<text class="lblSel" x="${(ultimo.px + 10).toFixed(1)}" y="${(ultimo.py + 4).toFixed(1)}">${esc(recortar(s.nombre, 22))}</text>`;
+  }
+
+  cont.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Nota de cada estudiante por periodo; la línea punteada marca el mínimo para aprobar">
+    ${fondo}${lineas}${puntos}${etiquetas}</svg>`;
+
+  const cercano = e => {
+    const svg = cont.firstElementChild;
+    if (!svg) return null;
+    const r = svg.getBoundingClientRect();
+    const sx = ((e.clientX - r.left) * W) / r.width, sy = ((e.clientY - r.top) * H) / r.height;
+    let best = null, bd = Infinity;
+    for (const p of pts) {
+      const dd = (p.px - sx) ** 2 + (p.py - sy) ** 2;
+      if (dd < bd) { bd = dd; best = p; }
+    }
+    return best && bd < 36 * 36 ? best : null;
+  };
+  const limpiar = () => {
+    cont.classList.remove('hovering');
+    cont.querySelectorAll('.hov').forEach(el => el.classList.remove('hov'));
+    tipOcultar();
+  };
+  cont.onpointermove = e => {
+    const p = cercano(e);
+    if (!p) { limpiar(); return; }
+    cont.querySelectorAll('.hov').forEach(el => el.classList.remove('hov'));
+    cont.classList.add('hovering');
+    cont.querySelectorAll(`[data-k="${p.k}"]`).forEach(el => el.classList.add('hov'));
+    tipMostrar(o.tip(p.k, p.j), e.clientX, e.clientY);
+  };
+  cont.onpointerleave = limpiar;
+  cont.onclick = e => { const p = cercano(e); if (p) { limpiar(); o.onSelect(p.k, p.j); } };
+}
+
+/* ---------- barras: % que pierde cada asignatura ---------- */
+
+/**
+ * grupos: [{campo, items:[{nombre, pct, pierden, pendiente}]}]
+ * tip(i) → html, onPick(i); i es el índice plano del item.
+ */
+function chartBarras(cont, o) {
+  const W = anchoDe(cont);
+  // en pantallas angostas el nombre va arriba y la barra ocupa todo el ancho debajo
+  const apilado = W < 520;
+  const lab = apilado ? 0 : Math.round(Math.min(280, W * 0.38)), valW = apilado ? 64 : 74;
+  const bw = Math.max(60, W - lab - valW - 12);
+  const RH = apilado ? 46 : 28, GH = 32, chars = apilado ? 60 : Math.floor(lab / 7.2);
+  const yBar = apilado ? 24 : 8, yTxt = apilado ? 34 : 18;
+  let yy = 0, i = 0, body = '';
+  for (const gr of o.grupos) {
+    body += `<text class="grpT" x="0" y="${yy + 21}">${esc(nombreCorto(gr.campo).toUpperCase())}</text>`;
+    yy += GH;
+    for (const it of gr.items) {
+      const lbl = apilado
+        ? `<text class="blbl" x="0" y="${yy + 16}">${esc(recortar(it.nombre, chars))}</text>`
+        : `<text class="blbl" x="${lab - 10}" y="${yy + 18}" text-anchor="end">${esc(recortar(it.nombre, chars))}</text>`;
+      if (it.pendiente) {
+        body += `<g>${lbl}<text class="ax" x="${lab}" y="${yy + yTxt}">sin digitar</text></g>`;
+      } else {
+        const w = it.pct > 0 ? Math.max(4, (it.pct / 100) * bw) : 0;
+        body += `<g class="bar" data-i="${i}" tabindex="0" role="button"
+          aria-label="${esc(it.nombre)}: ${f1(it.pct)} % pierde, ${it.pierden} estudiantes. Enter para ver quiénes.">
+          <rect class="hit" x="0" y="${yy + 1}" width="${W}" height="${RH - 2}" rx="3"/>${lbl}
+          <rect class="track" x="${lab}" y="${yy + yBar}" width="${bw}" height="12" rx="4"/>
+          ${w ? `<rect class="fill" x="${lab}" y="${yy + yBar}" width="${w.toFixed(1)}" height="12" rx="4"/>` : ''}
+          <text class="val" x="${(lab + w + 8).toFixed(1)}" y="${yy + yTxt}">${f1(it.pct)} %</text></g>`;
+      }
+      yy += RH;
+      i++;
+    }
+  }
+  cont.innerHTML = `<svg viewBox="0 0 ${W} ${yy + 6}" role="list" aria-label="Porcentaje de estudiantes que pierde cada asignatura">${body}</svg>`;
+
+  const barDe = e => e.target && e.target.closest ? e.target.closest('.bar') : null;
+  cont.onpointermove = e => { const b = barDe(e); if (b) tipMostrar(o.tip(+b.dataset.i), e.clientX, e.clientY); else tipOcultar(); };
+  cont.onpointerleave = tipOcultar;
+  cont.onclick = e => { const b = barDe(e); if (b) { tipOcultar(); o.onPick(+b.dataset.i); } };
+  cont.onkeydown = e => { const b = barDe(e); if (b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); o.onPick(+b.dataset.i); } };
+}
+
+/* ---------- mapa de calor: estudiantes × áreas ---------- */
+
+/** Intensidad según cuánto le falta a la nota para llegar al mínimo (una sola tinta, claro → intenso). */
+const claseDeficit = (v, u) => (v === null ? 'r0 na' : v >= u ? 'r0' : u - v < 5 ? 'r1' : u - v < 10 ? 'r2' : u - v < 20 ? 'r3' : 'r4');
+
+/**
+ * areas: nombres de columna; filas: [{nombre, promedio, perdidas, celdas:[{v, porValidar, provisional}]}]
+ * sel: nombre resaltado; tip(i, c) → html; onPick(i)
+ */
+function chartCalor(cont, o) {
+  const { areas, filas, umbral } = o;
+  cont.innerHTML = `<table class="calor">
+    <caption>Nota de cada área en el periodo. Solo se colorean las notas bajo ${coma(umbral)}: cuanto más intenso, más lejos del mínimo.</caption>
+    <thead><tr><th class="lbl">Estudiante</th>${areas.map(a => `<th title="${esc(a)}">${esc(recortar(nombreCorto(a), 16))}</th>`).join('')}
+      <th>Prom.</th><th>Áreas<br>perdidas</th></tr></thead>
+    <tbody>${filas.map((f, i) => `<tr class="hrow${f.nombre === o.sel ? ' sel' : ''}" data-n="${i}" tabindex="0">
+      <th scope="row">${esc(f.nombre)}</th>
+      ${f.celdas.map((c, j) => `<td class="num heat ${claseDeficit(c.v, umbral)}${c.porValidar ? ' pv' : ''}" data-c="${j}">${f1(c.v)}${c.provisional ? '*' : ''}</td>`).join('')}
+      <td class="num ${claseNota(f.promedio, umbral)}">${f1(f.promedio)}</td>
+      <td class="num ${f.perdidas ? 'neg' : 'mut'}">${f.perdidas}</td></tr>`).join('')}</tbody></table>`;
+
+  const celda = e => (e.target && e.target.closest ? e.target.closest('td[data-c]') : null);
+  const fila = e => (e.target && e.target.closest ? e.target.closest('tr[data-n]') : null);
+  cont.onpointermove = e => {
+    const c = celda(e), r = fila(e);
+    if (c && r) tipMostrar(o.tip(+r.dataset.n, +c.dataset.c), e.clientX, e.clientY); else tipOcultar();
+  };
+  cont.onpointerleave = tipOcultar;
+  cont.onclick = e => { const r = fila(e); if (r) { tipOcultar(); o.onPick(+r.dataset.n); } };
+  cont.onkeydown = e => { const r = fila(e); if (r && e.key === 'Enter') o.onPick(+r.dataset.n); };
+}
+
+/* ---------- composición de cada área ---------- */
+
+/** Barra apilada con el peso de cada asignatura y su lista con porcentajes. */
+function htmlComposicion(campos, pesosPorClave, cambios) {
+  return campos.map(k => {
+    const items = k.asigs.map((a, i) => {
+      const peso = pesosPorClave[k.nombre + '||' + a] ?? 0;
+      const cambio = cambios.find(c => c.campo === k.nombre && c.asignatura === a);
+      return { a, peso, cambio, color: `var(--s${(i % 8) + 1})` };
+    });
+    const suma = items.reduce((s, x) => s + x.peso, 0);
+    const pc = v => Math.round(v * 100) + ' %';
+    return `<div class="comp">
+      <div class="compCab"><b>${esc(nombreCorto(k.nombre))}</b>
+        <span class="${Math.abs(suma - 1) < 0.005 ? 'mut' : 'neg'}">${items.length} asignatura${items.length > 1 ? 's' : ''} · suma ${pc(suma)}</span></div>
+      <div class="stack" role="img" aria-label="${esc(items.map(x => x.a + ' ' + pc(x.peso)).join(', '))}">
+        ${items.map(x => `<span style="flex:${Math.max(x.peso, 0.001)};background:${x.color}" title="${esc(x.a)} · ${pc(x.peso)}"></span>`).join('')}
+      </div>
+      ${items.map(x => `<div class="compFila${x.cambio ? ' fix' : ''}"><i class="sw" style="background:${x.color}"></i>
+        <span>${esc(x.a)}</span><span class="pc">${pc(x.peso)}</span>
+        ${x.cambio ? `<span class="antes">corregido: el archivo traía ${pc(x.cambio.de)}</span>` : ''}</div>`).join('')}
+      ${Math.abs(suma - 1) >= 0.005 ? `<p class="neg" style="font-size:.8rem;margin:.4em 0 0">Los pesos no suman 100 %: se aplican en proporción entre sí, revisá que sea lo que querés.</p>` : ''}
+    </div>`;
+  }).join('');
+}
+
+const EJEMPLO_XLSX = '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';
+/* ============================================================================
    Interfaz: cargar archivo → recalcular pesos → mostrar y exportar el análisis.
    ==========================================================================*/
 
@@ -747,20 +1202,33 @@ const chipsSinRegistro = (lista, total) => lista.length > 6
   ? `<span class="tag warn"><b>${lista.length}</b> de ${total} asignaturas sin nota registrada</span>`
   : lista.map(a => `<span class="tag warn">${esc(a.asignatura)}</span>`).join('');
 
-let SHEETS = null, RES = null, ARCHIVO = '';
+let SHEETS = null, RES = null, ARCHIVO = '', TAMANO = null;
 const OPTS = { umbral: 60, sinRegistroCuenta: true, pesos: {} };
-let periodoActivo = 0, soloPierden = false, soloSinRegistro = false, busqueda = '';
+let periodoActivo = 0, soloPierden = true, soloSinRegistro = false, busqueda = '';
+// gráficos y vista previa
+let vizMetrica = 'promedio', estSel = null, hojaPrev = 0, filtroAsig = null, verTodos = false;
+const LISTA_CORTA = 8;
+
+/** Nombre del saludo de la cabecera. */
+const USUARIA = 'Liliana';
 
 /* ---------- carga ---------- */
 
 async function cargar(file) {
-  ARCHIVO = file.name;
-  estado('cargando', `Leyendo ${file.name}…`);
+  estado('cargando');
+  $('#cargaSub').textContent = `Leyendo ${file.name}…`;
   try {
-    const buf = await file.arrayBuffer();
-    SHEETS = await readWorkbook(buf);
-    OPTS.pesos = {};
-    recalcular();
+    const sheets = await readWorkbook(await file.arrayBuffer());
+    const res = analizar(sheets, { ...OPTS, pesos: {} });
+    // solo si el archivo nuevo se pudo analizar reemplaza al anterior
+    SHEETS = sheets; RES = res; OPTS.pesos = {};
+    ARCHIVO = file.name;
+    TAMANO = typeof file.size === 'number' ? file.size : null;
+    estSel = null; filtroAsig = null; hojaPrev = 0;
+    periodoActivo = ultimoCompleto();
+    if (vizMetrica !== 'promedio' && !RES.campos.some(k => k.nombre === vizMetrica)) vizMetrica = 'promedio';
+    estado('ok');
+    pintar();
   } catch (err) {
     estado('error', mensajeAmable(err));
     console.error(err);
@@ -768,9 +1236,12 @@ async function cargar(file) {
 }
 
 function recalcular() {
+  if (!SHEETS) return;
   try {
     RES = analizar(SHEETS, OPTS);
-    if (periodoActivo >= RES.periodos.length) periodoActivo = 0;
+    if (periodoActivo >= RES.periodos.length) periodoActivo = ultimoCompleto();
+    if (vizMetrica !== 'promedio' && !RES.campos.some(k => k.nombre === vizMetrica)) vizMetrica = 'promedio';
+    if (estSel && !RES.estudiantes.some(e => e.nombre === estSel)) estSel = null;
     estado('ok');
     pintar();
   } catch (err) {
@@ -791,26 +1262,107 @@ function mensajeAmable(err) {
 }
 
 function estado(modo, msg) {
-  $('#drop').hidden = modo === 'ok';
-  $('#app').hidden = modo !== 'ok';
   $('#msg').hidden = !msg;
   $('#msg').textContent = msg || '';
   $('#msg').className = 'msg ' + (modo === 'error' ? 'err' : '');
+  $('#drop').classList.toggle('cargando', modo === 'cargando');
+  if (modo === 'error') pintarCarga();
 }
 
 /* ---------- pintado ---------- */
 
 function pintar() {
-  $('#nombreArchivo').textContent = ARCHIVO;
   $('#subtitulo').textContent =
-    `${RES.periodos.length} periodo${RES.periodos.length > 1 ? 's' : ''} con notas · ${RES.periodos[0].total} estudiantes · ${RES.campos.length} áreas`;
+    `${RES.periodos.length} periodo${RES.periodos.length > 1 ? 's' : ''} con notas · ${RES.estudiantes.length} estudiantes · ${RES.campos.length} áreas`;
+  pintarCarga();
+  pintarSaludo();
   pintarAvisoPesos();
   pintarPesos();
-  pintarResumen();
   pintarTabsPeriodo();
+  pintarResumen();
+  pintarGraficos();
   pintarEstudiantes();
   pintarAsignaturas();
+  pintarArchivo();
   pintarRevision();
+  $$('[data-export]').forEach(b => { b.disabled = false; });
+  guiaTrasCargar();
+}
+
+/* ---------- cabecera ---------- */
+
+function pintarSaludo() {
+  let fecha = '';
+  try { fecha = new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { /* sin Intl */ }
+  $('#fecha').textContent = fecha || 'Consolidado de notas por periodo';
+  $('#saludo').textContent = `Hola, ${USUARIA}.`;
+  if (!RES) {
+    $('#bienvenida').innerHTML = 'Bienvenida de nuevo. Cargá el consolidado del curso y acá vas a ver quién va perdiendo y en qué.';
+    return;
+  }
+  const p = RES.periodos[periodoActivo];
+  const curso = (ARCHIVO.replace(/\.xlsx?$/i, '').match(/\d{3,4}/) || [])[0];
+  const pierden = p.total - p.sinPerder;
+  $('#bienvenida').innerHTML = `Bienvenida de nuevo. En <b>${esc(p.hoja)}</b>${curso ? ` del curso <b>${esc(curso)}</b>` : ''},
+    ${pierden ? `<b>${pierden} de ${p.total}</b> estudiantes pierden al menos un área` : `ningún estudiante pierde áreas`}${
+    p.tresOMas ? ` y <b>${p.tresOMas}</b> pierden tres o más` : ''}.`;
+}
+
+function pintarCarga() {
+  const ok = !!RES;
+  $('#drop').classList.toggle('listo', ok);
+  $('#cargaTit').textContent = ok ? ARCHIVO : 'Ningún archivo cargado';
+  $('#cargaSub').textContent = ok ? `${tamanoLegible(TAMANO)} · ${SHEETS.length} hojas · podés soltar otro archivo para reemplazarlo`
+    : 'También podés arrastrar el .xlsx a cualquier parte de la página';
+  $('#btnElegir').textContent = ok ? 'Cambiar archivo' : 'Cargar consolidado';
+}
+
+/* ---------- espacios reservados (antes de cargar) ---------- */
+
+function pintarVacio() {
+  pintarSaludo();
+  pintarCarga();
+  const kpi = k => `<div class="kpi"><div class="k">${k}</div><div class="v ph">—</div><div class="s"><span class="sk" style="width:70%;height:10px;margin-top:6px"></span></div></div>`;
+  $('#kpis').innerHTML = ['Pierden al menos un área', 'Pierden 3 áreas o más', 'Promedio del curso', 'Notas sin registrar'].map(kpi).join('');
+  $('#tabsPeriodo').innerHTML = ['P1', 'P2', 'P3'].map(x => `<span class="chip ph">${x}</span>`).join('');
+  const filaSk = (n, w) => `<tr><th scope="row"><span class="sk" style="width:${w}px;height:10px"></span></th>${
+    Array.from({ length: n }, () => '<td><span class="sk" style="width:38px;height:10px;margin-left:auto"></span></td>').join('')}</tr>`;
+  $('#tablaAreas').innerHTML = `<table><caption>Nota de cada área por periodo · aparece al cargar el archivo.</caption><tbody>${
+    [160, 120, 140, 110].map(w => filaSk(6, w)).join('')}</tbody></table>`;
+  const msgG = t => `<div class="msgG"><span>${t}</span></div>`;
+  $('#chLineas').innerHTML = `<div class="ghost"><svg viewBox="0 0 600 300" aria-hidden="true">
+    ${[60, 120, 180, 240].map(y => `<line class="gl" style="stroke-width:1" x1="30" x2="590" y1="${y}" y2="${y}"/>`).join('')}
+    <polyline class="gl" points="40,120 220,95 400,130 580,105"/><polyline class="gl" points="40,170 220,150 400,140 580,160"/>
+    <polyline class="gl" points="40,210 220,230 400,200 580,215"/><polyline class="gl" points="40,80 220,110 400,90 580,75"/>
+    </svg>${msgG('Las líneas de cada estudiante aparecen al cargar el archivo')}</div>`;
+  $('#leyLineas').innerHTML = '';
+  $('#chBarras').innerHTML = `<div class="ghost"><svg viewBox="0 0 600 300" aria-hidden="true">
+    ${[70, 40, 85, 25, 55, 65, 30, 45].map((w, i) => `<rect class="g" x="150" y="${12 + i * 36}" width="${w * 4.2}" height="12" rx="4"/>
+      <rect class="g" x="20" y="${12 + i * 36}" width="110" height="12" rx="4"/>`).join('')}</svg>${msgG('Porcentaje que pierde cada asignatura')}</div>`;
+  $('#composicion').innerHTML = [0, 1, 2].map(() => `<div class="comp"><span class="sk" style="width:45%;height:12px"></span>
+    <div class="stack"><span class="sk" style="flex:.5"></span><span class="sk" style="flex:.33"></span><span class="sk" style="flex:.17"></span></div>
+    <span class="sk" style="width:80%;height:10px;margin:6px 0"></span><span class="sk" style="width:65%;height:10px"></span></div>`).join('');
+  $('#chCalor').innerHTML = `<table><caption>Estudiantes × áreas · aparece al cargar el archivo.</caption><tbody>${
+    [180, 150, 200, 140, 170].map(w => filaSk(7, w)).join('')}</tbody></table>`;
+  $('#leyCalor').innerHTML = '';
+  pintarDetalleEst();
+  $('#contEst').innerHTML = [0, 1, 2].map(() => `<article class="est"><div class="estCab">
+    <span class="sk" style="width:240px;height:14px"></span><span class="sk" style="width:120px;height:12px"></span></div>
+    <div class="linea"><span class="sk" style="width:90px;height:20px"></span><span class="sk" style="width:130px;height:20px"></span></div></article>`).join('');
+  $('#contadorEst').textContent = '';
+  $('#tablaAsig').innerHTML = '<p class="mut" style="padding:12px 16px;margin:0">Aparece al cargar el archivo.</p>';
+  const dato = k => `<div><div class="k">${k}</div><div class="v ph">—</div></div>`;
+  $('#infoArchivo').innerHTML = ['Archivo', 'Tamaño', 'Hojas', 'Estudiantes', 'Áreas', 'Asignaturas'].map(dato).join('');
+  $('#hojasPrev').innerHTML = '';
+  $('#vistaPrevia').innerHTML = '<p class="mut" style="padding:12px 16px;margin:0">Aparece al cargar el archivo.</p>';
+  $('#revision').innerHTML = '<p class="mut">Aparece al cargar el archivo.</p>';
+}
+
+/** Índice del último periodo sin asignaturas pendientes (o el último, si todos están en digitación). */
+function ultimoCompleto() {
+  const P = RES.periodos;
+  for (let i = P.length - 1; i >= 0; i--) if (!P[i].pendientes.length) return i;
+  return P.length - 1;
 }
 
 function pintarAvisoPesos() {
@@ -851,27 +1403,30 @@ function pintarPesos() {
 function pintarResumen() {
   const P = RES.periodos;
   const kpi = (k, v, s, warn) => `<div class="kpi"><div class="k">${k}</div><div class="v${warn ? ' warn' : ''}">${v}</div><div class="s">${s}</div></div>`;
-  // el titular se lee del último periodo COMPLETO; los que están en digitación no encabezan
+  // los indicadores siguen al periodo elegido; la tendencia recorre los periodos completos
   const completos = P.filter(p => !p.pendientes.length);
   const base = completos.length ? completos : P;
-  const ult = base[base.length - 1];
+  const ult = P[periodoActivo];
   const enDigitacion = P.filter(p => p.pendientes.length);
+  // cuatro cifras: lo que una coordinadora necesita saber de un vistazo
+  const pierden = ult.total - ult.sinPerder;
+  const tendencia = f => base.length > 1 ? base.map(f).join(' → ') : '';
   $('#kpis').innerHTML =
-    kpi('Promedio del curso', f1(ult.promedio), `en ${esc(ult.hoja)} · ${base.map(p => f1(p.promedio)).join(' → ')}`) +
-    kpi('Áreas perdidas', f1(ult.pctAreas) + ' %', `de las áreas con nota · ${base.map(p => f1(p.pctAreas) + '%').join(' → ')}`, ult.pctAreas > 20) +
-    kpi('Sin perder nada', `${ult.sinPerder}<span class="de"> / ${ult.total}</span>`, `estudiantes · ${base.map(p => p.sinPerder).join(' → ')}`) +
-    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> / ${ult.total}</span>`, `riesgo alto · ${base.map(p => p.tresOMas).join(' → ')}`, ult.tresOMas > 0) +
-    kpi('No registran nota', `${ult.conSinRegistro}<span class="de"> / ${ult.total}</span>`,
-      ult.areasPorValidar ? `${ult.areasPorValidar} áreas se pierden solo por eso — validar con los docentes`
-                          : 'estudiantes con alguna casilla en 0');
+    kpi('Pierden al menos un área', `${pierden}<span class="de"> de ${ult.total}</span>`,
+      tendencia(p => p.total - p.sinPerder) || 'estudiantes', pierden > 0) +
+    kpi('Pierden 3 áreas o más', `${ult.tresOMas}<span class="de"> de ${ult.total}</span>`,
+      tendencia(p => p.tresOMas) || 'riesgo alto', ult.tresOMas > 0) +
+    kpi('Promedio del curso', f1(ult.promedio), tendencia(p => f1(p.promedio)) || esc(ult.hoja)) +
+    kpi('Notas sin registrar', `${ult.conSinRegistro}<span class="de"> estudiantes</span>`,
+      ult.areasPorValidar ? `${ult.areasPorValidar} áreas se pierden solo por eso: validar con docentes` : 'con alguna casilla en 0');
 
   const banda = $('#avisoDigitacion');
   if (enDigitacion.length) {
     banda.hidden = false;
     banda.innerHTML = `<div class="h">Periodos en digitación</div><p>` +
       enDigitacion.map(p => `<strong>${esc(p.hoja)}</strong>: ${p.digitadas} de ${p.totalAsigs} asignaturas`).join(' · ') +
-      `.</p><p class="mut">Las cifras de arriba corresponden a ${esc(ult.hoja)}, el último periodo completo.
-       Los periodos incompletos se pueden consultar en «Qué pierde cada estudiante», con sus áreas marcadas como provisionales.</p>`;
+      `.</p><p class="mut">${ult.pendientes.length ? `Estás viendo ${esc(ult.hoja)}, que está incompleto: sus cifras son provisionales.`
+        : `Estás viendo ${esc(ult.hoja)}. Los periodos incompletos se pueden elegir arriba; sus áreas salen como provisionales.`}</p>`;
   } else banda.hidden = true;
 
   const cab = P.map(p => `<th colspan="2">${esc(p.hoja)}${p.pendientes.length ? ` <span class="frac">${p.digitadas}/${p.totalAsigs}</span>` : ''}</th>`).join('');
@@ -891,11 +1446,14 @@ function pintarTabsPeriodo() {
   $('#tabsPeriodo').innerHTML = RES.periodos.map((p, i) =>
     `<button class="chip${i === periodoActivo ? ' on' : ''}${p.pendientes.length ? ' parcial' : ''}" data-p="${i}">${esc(p.hoja)}${
       p.pendientes.length ? ` <span class="frac">${p.digitadas}/${p.totalAsigs}</span>` : ''}</button>`).join('');
+  // en el celular los periodos se desplazan de costado: el elegido queda siempre a la vista
+  const cont = $('#tabsPeriodo'), on = cont.querySelector && cont.querySelector('.chip.on');
+  if (on && cont.scrollWidth > cont.clientWidth) cont.scrollLeft = on.offsetLeft - (cont.clientWidth - on.offsetWidth) / 2;
   $('#tabsPeriodo').onclick = e => {
     const b = e.target.closest('[data-p]');
     if (!b) return;
     periodoActivo = +b.dataset.p;
-    pintarTabsPeriodo(); pintarEstudiantes();
+    pintar();
   };
 }
 
@@ -904,14 +1462,18 @@ function pintarEstudiantes() {
   let filas = p.filas;
   if (soloPierden) filas = filas.filter(f => f.camposPerdidos.length);
   if (soloSinRegistro) filas = filas.filter(f => f.sinRegistro.length);
+  if (filtroAsig) filas = filas.filter(f => f.asigsPerdidas.some(a => a.asignatura === filtroAsig.asignatura && a.campo === filtroAsig.campo));
   if (busqueda) {
     const q = busqueda.toLowerCase();
     filas = filas.filter(f => f.nombre.toLowerCase().includes(q));
   }
   filas = [...filas].sort((a, b) => b.camposPerdidos.length - a.camposPerdidos.length || (a.promedio ?? 0) - (b.promedio ?? 0));
 
-  $('#contEst').innerHTML = filas.length ? filas.map(f => `
-    <article class="est${f.camposPerdidos.length ? (f.camposPerdidos.every(c => c.porValidar) ? ' validar' : ' alerta')
+  // en el tablero la lista arranca corta; con búsqueda o filtro se muestra completa
+  const corta = !verTodos && !busqueda && !filtroAsig && filas.length > LISTA_CORTA + 2;
+  const visibles = corta ? filas.slice(0, LISTA_CORTA) : filas;
+  $('#contEst').innerHTML = (filas.length ? visibles.map(f => `
+    <article data-est="${esc(f.nombre)}" title="Ver la ficha de ${esc(f.nombre)}" class="est${f.camposPerdidos.length ? (f.camposPerdidos.every(c => c.porValidar) ? ' validar' : ' alerta')
         : (f.sinRegistro.length ? ' validar' : '')}">
       <div class="estCab">
         <h4>${esc(f.nombre)}</h4>
@@ -922,21 +1484,43 @@ function pintarEstudiantes() {
         </div>
       </div>
       ${f.campos.some(c => c.sinDatos) ? `<div class="linea"><span class="et">Sin notas todavía</span>
-        <div class="chips">${f.campos.filter(c => c.sinDatos).map(c => `<span class="tag">${esc(c.campo)}</span>`).join('')}</div></div>` : ''}
+        <div class="chips">${f.campos.filter(c => c.sinDatos).map(c => `<span class="tag">${esc(nombreCorto(c.campo))}</span>`).join('')}</div></div>` : ''}
       ${f.camposPerdidos.length ? `
         <div class="linea"><span class="et">Áreas que pierde</span>
-          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag ${c.porValidar ? 'warn' : 'bad'}">${esc(c.campo)} <b>${f1(c.nota)}</b>${
+          <div class="chips">${f.camposPerdidos.map(c => `<span class="tag ${c.porValidar ? 'warn' : 'bad'}">${esc(nombreCorto(c.campo))} <b>${f1(c.nota)}</b>${
   c.porValidar ? ' <i>por validar</i>' : ''}${c.provisional ? ' <i>prov.</i>' : ''}</span>`).join('')}</div></div>
         ${f.sinRegistro.length ? `<div class="linea"><span class="et">No registra nota</span>
           <div class="chips">${chipsSinRegistro(f.sinRegistro, p.totalAsigs)}</div></div>` : ''}
-        <div class="linea"><span class="et">Asignaturas que pierde</span>
+        <div class="linea lAsig"><span class="et">Asignaturas que pierde</span>
           <div class="chips">${f.asigsPerdidas.map(a => `<span class="tag">${esc(a.asignatura)} <b>${f1(a.nota)}</b></span>`).join('') || '<span class="mut">ninguna: el área cae por el promedio ponderado, no por una asignatura suelta</span>'}</div></div>`
       : `${f.sinRegistro.length ? `<div class="linea"><span class="et">No registra nota</span>
           <div class="chips">${chipsSinRegistro(f.sinRegistro, p.totalAsigs)}</div></div>` : ''}
         <div class="linea ok">Aprueba las ${f.campos.length} áreas${f.asigsPerdidas.length ? ` · pero pierde ${f.asigsPerdidas.length} asignatura${f.asigsPerdidas.length > 1 ? 's' : ''}: ${f.asigsPerdidas.map(a => esc(a.asignatura) + ' (' + f1(a.nota) + ')').join(', ')}` : ''}</div>`}
-    </article>`).join('') : `<p class="mut">Ningún estudiante coincide con el filtro.</p>`;
+      <div class="verFicha">${f.asigsPerdidas.length ? `${f.asigsPerdidas.length} asignatura${f.asigsPerdidas.length > 1 ? 's' : ''} perdida${f.asigsPerdidas.length > 1 ? 's' : ''} · ` : ''}Ver ficha ›</div>
+    </article>`).join('') : `<p class="mut">Ningún estudiante coincide con el filtro.</p>`) +
+    (corta ? `<button class="btn ghost verMas" data-vermas>Ver los ${filas.length - LISTA_CORTA} estudiantes restantes</button>`
+      : verTodos && filas.length > LISTA_CORTA + 2 ? `<button class="btn ghost verMas" data-vermas>Mostrar solo los primeros ${LISTA_CORTA}</button>` : '');
+  $('#contEst').onclick = e => {
+    const art = e.target.closest('[data-est]');
+    if (art) {
+      estSel = art.dataset.est;
+      pintarGraficos();
+      // en el celular la ficha se abre como hoja desde abajo; en pantalla grande, junto al gráfico
+      if (!esMovil()) $('#sec-graficos').scrollIntoView?.({ block: 'start' });
+      return;
+    }
+    if (!e.target.closest('[data-vermas]')) return;
+    verTodos = !verTodos;
+    pintarEstudiantes();
+    if (!verTodos) $('#sec-estudiantes').scrollIntoView?.({ block: 'start' });
+  };
 
   $('#contadorEst').textContent = `${filas.length} de ${p.filas.length} estudiantes`;
+  const fa = $('#filtroAsig');
+  fa.hidden = !filtroAsig;
+  fa.innerHTML = filtroAsig ? `<span class="tag bad">Pierden <b>${esc(filtroAsig.asignatura)}</b></span>
+    <button class="btn ghost sm" data-quitar>Quitar filtro</button>` : '';
+  fa.onclick = e => { if (e.target.closest('[data-quitar]')) { filtroAsig = null; pintarEstudiantes(); } };
 
   const av = $('#avisoPeriodo');
   if (p.pendientes.length) {
@@ -987,9 +1571,228 @@ function pintarRevision() {
     if (desc) sub.push(`<strong>${desc}</strong> estudiantes tienen al menos un área cuyo valor recalculado difiere del que trae el archivo <span class="mut">(esperado si se corrigieron pesos)</span>.`);
     if (sub.length) items.push([p.hoja, sub.join('<br>')]);
   }
+  $('#nRevision').textContent = items.length ? `· ${items.length} punto${items.length > 1 ? 's' : ''} para revisar` : '· sin observaciones';
   $('#revision').innerHTML = items.length
     ? items.map(([t, c]) => `<div class="rev"><div class="revTit">${esc(t)}</div><div>${c}</div></div>`).join('')
     : '<p class="mut">Sin observaciones: no se detectaron hojas vacías, columnas repetidas ni pesos inconsistentes.</p>';
+}
+
+/* ---------- gráficos ---------- */
+
+const valorEn = (fila, met) => !fila ? null
+  : met === 'promedio' ? fila.promedio : (fila.campos.find(c => c.campo === met)?.area ?? null);
+const pierdeEn = (fila, met) => !fila ? false
+  : met === 'promedio' ? fila.camposPerdidos.length > 0 : !!fila.campos.find(c => c.campo === met)?.pierde;
+const listaCorta = (arr, n = 5) => arr.slice(0, n).join(' · ') + (arr.length > n ? ` · y ${arr.length - n} más` : '');
+
+function pintarGraficos() {
+  const P = RES.periodos, p = P[periodoActivo], u = RES.umbral, vizPeriodo = periodoActivo;
+  const sel = $('#vizMetrica');
+  sel.innerHTML = `<option value="promedio">Promedio general</option>` +
+    RES.campos.map(k => `<option value="${esc(k.nombre)}">${esc(nombreCorto(k.nombre))}</option>`).join('');
+  sel.value = vizMetrica;
+
+  // --- líneas ---
+  const metLbl = vizMetrica === 'promedio' ? 'promedio' : nombreCorto(vizMetrica);
+  // los periodos en digitación hunden todas las líneas: solo entran si se eligen
+  const idx = P.map((x, i) => i).filter(i => !P[i].pendientes.length || i === vizPeriodo);
+  const series = RES.estudiantes.map(e => ({
+    nombre: e.nombre,
+    valores: idx.map(i => valorEn(e.porPeriodo[i], vizMetrica)),
+    riesgo: pierdeEn(e.porPeriodo[vizPeriodo], vizMetrica),
+    sel: e.nombre === estSel,
+  }));
+  const ocultos = P.filter((x, i) => !idx.includes(i)).map(x => x.hoja);
+  chartLineas($('#chLineas'), {
+    periodos: idx.map(i => P[i].hoja + (P[i].pendientes.length ? ' (parcial)' : '')), series, umbral: u, periodoSel: idx.indexOf(vizPeriodo),
+    tip: (k, jj) => {
+      const j = idx[jj], e = RES.estudiantes[k], f = e.porPeriodo[j];
+      const v = valorEn(f, vizMetrica);
+      let h = `<b>${esc(e.nombre)}</b><div>${esc(P[j].hoja)} · ${esc(metLbl)} <strong class="${claseNota(v, u)}">${f1(v)}</strong></div>`;
+      if (f && f.camposPerdidos.length)
+        h += `<div class="neg">Áreas: ${esc(listaCorta(f.camposPerdidos.map(c => `${nombreCorto(c.campo)} ${f1(c.nota)}${c.porValidar ? ' (por validar)' : ''}`)))}</div>`;
+      if (f && f.asigsPerdidas.length)
+        h += `<div>Asignaturas: ${esc(listaCorta(f.asigsPerdidas.map(a => `${a.asignatura} ${f1(a.nota)}`)))}</div>`;
+      if (f && !f.camposPerdidos.length && !f.asigsPerdidas.length) h += `<div class="pos">No pierde nada en este periodo</div>`;
+      return h + `<div class="mut">Clic para abrir la ficha</div>`;
+    },
+    onSelect: (k, jj) => {
+      estSel = RES.estudiantes[k].nombre;
+      if (idx[jj] !== periodoActivo) { periodoActivo = idx[jj]; pintar(); } else pintarGraficos();
+    },
+  });
+  const enRiesgo = series.filter(s => s.riesgo).length;
+  $('#leyLineas').innerHTML =
+    `<span><i style="background:var(--neg)"></i>Pierde ${vizMetrica === 'promedio' ? 'alguna área' : 'el área'} en ${esc(p.hoja)} (${enRiesgo})</span>` +
+    `<span><i style="background:var(--muted)"></i>Aprueba (${series.length - enRiesgo})</span>` +
+    (estSel ? `<span><i style="background:var(--accent)"></i>${esc(estSel)}</span>` : '') +
+    `<span><i style="background:repeating-linear-gradient(90deg,var(--neg) 0 5px,transparent 5px 9px)"></i>Nota mínima (${f1(u)})</span>` +
+    (ocultos.length ? `<span class="mut">Fuera del gráfico por estar en digitación: ${esc(ocultos.join(', '))} (elegilos arriba para verlos)</span>` : '');
+
+  pintarDetalleEst();
+
+  // --- barras ---
+  $('#tituloBarras').textContent = `Dónde se pierde más en ${p.hoja}`;
+  const plano = [];
+  const grupos = RES.campos.map(k => ({
+    campo: k.nombre,
+    items: k.asigs.map(a => {
+      const x = p.asig.find(s => s.nombre === a && s.campo === k.nombre) || {};
+      const it = { nombre: a, campo: k.nombre, pct: x.pct ?? 0, pierden: x.pierden ?? 0, promedio: x.promedio ?? null, pendiente: !!x.pendiente, peso: x.peso };
+      plano.push(it);
+      return it;
+    }),
+  }));
+  chartBarras($('#chBarras'), {
+    grupos,
+    tip: i => {
+      const it = plano[i];
+      return `<b>${esc(it.nombre)}</b><div class="mut">${esc(nombreCorto(it.campo))} · peso ${Math.round((it.peso ?? 0) * 100)} %</div>
+        <div><strong>${f1(it.pct)} %</strong> pierde · ${it.pierden} estudiante${it.pierden === 1 ? '' : 's'}</div>
+        <div>Promedio <strong class="${claseNota(it.promedio, u)}">${f1(it.promedio)}</strong></div>
+        <div class="mut">Clic para ver quiénes la pierden</div>`;
+    },
+    onPick: i => {
+      const it = plano[i];
+      filtroAsig = { asignatura: it.nombre, campo: it.campo };
+      pintarEstudiantes();
+      $('#sec-estudiantes').scrollIntoView?.({ block: 'start' });
+    },
+  });
+
+  // --- mapa de calor ---
+  const filasCalor = [...p.filas]
+    .sort((a, b) => b.camposPerdidos.length - a.camposPerdidos.length || (a.promedio ?? 0) - (b.promedio ?? 0))
+    .map(f => ({
+      nombre: f.nombre, promedio: f.promedio, perdidas: f.camposPerdidos.length, fila: f,
+      celdas: RES.campos.map(k => {
+        const c = f.campos.find(x => x.campo === k.nombre);
+        return { v: c ? c.area : null, porValidar: !!(c && c.porValidar), provisional: !!(c && c.provisional), c };
+      }),
+    }));
+  chartCalor($('#chCalor'), {
+    areas: RES.campos.map(k => k.nombre), filas: filasCalor, umbral: u, sel: estSel,
+    tip: (i, j) => {
+      const r = filasCalor[i], c = r.celdas[j].c;
+      if (!c) return `<b>${esc(r.nombre)}</b>`;
+      const perd = c.detalle.filter(d => d.pierde).map(d => `${d.asignatura} ${f1(d.nota)}`);
+      const sinReg = c.detalle.filter(d => d.sinRegistro).map(d => d.asignatura);
+      return `<b>${esc(r.nombre)}</b><div>${esc(nombreCorto(c.campo))} <strong class="${claseNota(c.area, u)}">${f1(c.area)}</strong>${
+        c.porValidar ? ' · <span class="mid">por validar</span>' : ''}${c.provisional ? ' · provisional' : ''}</div>` +
+        (perd.length ? `<div class="neg">Pierde: ${esc(listaCorta(perd))}</div>` : '') +
+        (sinReg.length ? `<div class="mid">Sin registrar: ${esc(listaCorta(sinReg))}</div>` : '');
+    },
+    onPick: i => { estSel = filasCalor[i].nombre; pintarGraficos(); },
+  });
+  $('#leyCalor').innerHTML = `<span><i class="sq"></i>Aprueba</span>` +
+    [['r1', 'hasta 5 bajo el mínimo'], ['r2', '5 a 10'], ['r3', '10 a 20'], ['r4', 'más de 20']]
+      .map(([c, t]) => `<span><i class="sq ${c}"></i>${t}</span>`).join('') +
+    `<span><i class="sq" style="box-shadow:inset 0 0 0 2px var(--mid)"></i>Se pierde solo por notas sin registrar</span>` +
+    `<span>* provisional (periodo en digitación)</span>`;
+}
+
+const esMovil = () => !!(window.matchMedia && window.matchMedia('(max-width: 620px)').matches);
+
+/** En el celular la ficha es una hoja que sube desde abajo, con un velo detrás. */
+function hojaFicha(abierta) {
+  const box = $('#detalleEst');
+  const movil = abierta && esMovil();
+  box.classList.toggle('hoja', movil);
+  $('#velo').hidden = !movil;
+  if (document.body) document.body.style.overflow = movil ? 'hidden' : '';
+  if (movil) box.scrollTop = 0;
+}
+
+function cerrarFicha() { estSel = null; hojaFicha(false); pintarGraficos(); }
+
+function pintarDetalleEst() {
+  const box = $('#detalleEst');
+  const e = estSel ? RES.estudiantes.find(x => x.nombre === estSel) : null;
+  box.classList.toggle('vacia', !e);
+  hojaFicha(!!e);
+  if (!e) {
+    box.innerHTML = `<div class="vacioFicha"><div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+      <b style="color:var(--ink2)">Ficha del estudiante</b><br>${RES ? 'Tocá un estudiante de la lista o un punto del gráfico para ver sus notas.'
+        : 'Aparece al cargar el archivo y elegir un estudiante.'}</div></div>`;
+    box.onclick = null;
+    return;
+  }
+  const P = RES.periodos, u = RES.umbral;
+  // mismos periodos que el gráfico de líneas: los completos más el elegido
+  const idxF = P.map((x, i) => i).filter(i => !P[i].pendientes.length || i === periodoActivo);
+  box.innerHTML = `<div class="cab"><div><div class="eyebrow">Ficha del estudiante</div><h3 style="font-size:1.15rem">${esc(e.nombre)}</h3></div>
+      <div class="estNums"><span class="mut">promedio global</span> <b class="${claseNota(e.global, u)}">${f1(e.global)}</b>
+      ${e.delta !== null && P.length > 1 ? `<span class="sep"></span><span class="mut">variación</span> <b class="${e.delta < 0 ? 'neg' : 'pos'}">${e.delta > 0 ? '+' : ''}${f1(e.delta)}</b>` : ''}
+      <button class="btn ghost sm" data-cerrar style="margin-left:10px">Cerrar</button></div></div>
+    <div class="tablewrap" style="box-shadow:none"><table>
+      <thead><tr><th class="lbl">Área</th>${idxF.map(i => `<th>${esc(P[i].hoja)}</th>`).join('')}</tr></thead>
+      <tbody>${RES.campos.map(k => `<tr><th scope="row">${esc(nombreCorto(k.nombre))}</th>${idxF.map(i => {
+        const f = e.porPeriodo[i], c = f && f.campos.find(x => x.campo === k.nombre);
+        return `<td class="num ${claseNota(c ? c.area : null, u)}">${f1(c ? c.area : null)}${c && c.porValidar ? '<span class="mid" title="Se pierde solo por notas sin registrar"> *</span>' : ''}</td>`;
+      }).join('')}</tr>`).join('')}
+      <tr><th scope="row">Promedio</th>${idxF.map(i => e.promedios[i]).map(v => `<td class="num ${claseNota(v, u)}"><b>${f1(v)}</b></td>`).join('')}</tr></tbody>
+    </table></div>
+    ${idxF.map(j => [e.porPeriodo[j], j]).map(([f, j]) => !f ? '' : `<div class="linea"><span class="et">${esc(P[j].hoja)}</span><div class="chips">${
+      f.asigsPerdidas.length ? f.asigsPerdidas.map(a => `<span class="tag bad">${esc(a.asignatura)} <b>${f1(a.nota)}</b></span>`).join('')
+        : '<span class="mut" style="font-size:.85rem">no pierde asignaturas</span>'}${
+      f.sinRegistro.length ? `<span class="tag warn">${f.sinRegistro.length} sin registrar</span>` : ''}</div></div>`).join('')}
+    ${e.porPeriodo.some(f => f && f.camposPerdidos.some(c => c.porValidar)) ? '<p class="mut" style="font-size:.78rem;margin:.6em 0 0">* el área se pierde solo por notas sin registrar: validar con el docente.</p>' : ''}`;
+  box.onclick = ev => { if (ev.target.closest('[data-cerrar]')) cerrarFicha(); };
+}
+
+/* ---------- archivo y ponderación ---------- */
+
+const letraCol = i => { let s = ''; for (i++; i > 0; i = Math.floor((i - 1) / 26)) s = String.fromCharCode(65 + ((i - 1) % 26)) + s; return s; };
+const tamanoLegible = b => (b === null ? '—' : b < 1024 * 1024 ? Math.round(b / 1024) + ' KB' : (b / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB');
+
+function pintarArchivo() {
+  const usadas = RES.periodos.length, asigs = RES.campos.reduce((s, k) => s + k.asigs.length, 0);
+  const dato = (k, v) => `<div><div class="k">${k}</div><div class="v">${v}</div></div>`;
+  $('#infoArchivo').innerHTML =
+    dato('Archivo', esc(ARCHIVO)) + dato('Tamaño', tamanoLegible(TAMANO)) +
+    dato('Hojas', `${usadas} con notas <span class="mut">de ${SHEETS.length}</span>`) +
+    dato('Estudiantes', RES.estudiantes.length) + dato('Áreas', RES.campos.length) + dato('Asignaturas', asigs);
+
+  $('#composicion').innerHTML = htmlComposicion(RES.campos, RES.pesosPorClave, RES.cambiosPeso);
+
+  if (hojaPrev >= SHEETS.length) hojaPrev = 0;
+  $('#hojasPrev').innerHTML = SHEETS.map((s, i) => {
+    const vacia = RES.vacias.find(v => v.hoja === s.name);
+    return `<button class="chip${i === hojaPrev ? ' on' : ''}${vacia ? ' desc' : ''}" data-h="${i}"
+      title="${vacia ? 'Descartada: ' + esc(vacia.motivo) : 'Se usa en el análisis'}">${esc(s.name)}</button>`;
+  }).join('');
+  $('#hojasPrev').onclick = e => {
+    const b = e.target.closest('[data-h]');
+    if (b) { hojaPrev = +b.dataset.h; pintarArchivo(); }
+  };
+  pintarVistaPrevia();
+}
+
+function pintarVistaPrevia() {
+  const sh = SHEETS[hojaPrev], grid = sh.grid;
+  const est = estructura(grid);
+  const vacia = RES.vacias.find(v => v.hoja === sh.name);
+  const filaPeso = filaDePesos(grid);
+  const MUESTRA = 8;
+  const ultimaFila = est.estudiantes.length ? est.estudiantes[Math.min(MUESTRA, est.estudiantes.length) - 1].fila : Math.min(grid.length, 12) - 1;
+  const ancho = Math.min(40, Math.max(0, ...grid.slice(0, ultimaFila + 1).map(r => (r ? r.length : 0))));
+  const colsArea = new Set(est.campos.map(k => k.col));
+  const celda = v => (v === null || v === undefined ? '' : typeof v === 'number'
+    ? (Number.isInteger(v) ? String(v) : coma(+v.toFixed(2))) : esc(v));
+  const filas = [];
+  for (let r = 0; r <= ultimaFila; r++) {
+    const fila = grid[r] || [];
+    const cls = r === filaPeso ? 'fPeso' : r < filaPeso ? 'fCab' : '';
+    filas.push(`<tr class="${cls}"><th class="rn">${r + 1}</th>${Array.from({ length: ancho }, (_, c) => {
+      const v = fila[c];
+      const cc = [typeof v === 'number' ? 'n' : '', colsArea.has(c) ? 'cArea' : '', c === est.colNombre && r > filaPeso ? 'cNom' : ''].filter(Boolean).join(' ');
+      return `<td${cc ? ` class="${cc}"` : ''} title="${typeof v === 'string' ? esc(v) : ''}">${celda(v)}</td>`;
+    }).join('')}</tr>`);
+  }
+  $('#vistaPrevia').innerHTML = `<table><caption>${esc(sh.name)} · ${vacia ? `descartada: ${esc(vacia.motivo)}` :
+      `mostrando ${Math.min(MUESTRA, est.estudiantes.length)} de ${est.estudiantes.length} estudiantes`}</caption>
+    <thead><tr><th class="rn"></th>${Array.from({ length: ancho }, (_, c) => `<th>${letraCol(c)}</th>`).join('')}</tr></thead>
+    <tbody>${filas.join('')}</tbody></table>`;
 }
 
 /* ---------- descargas ---------- */
@@ -1011,7 +1814,7 @@ async function descargar(clave) {
   const contenido = f(RES);
   const base = nombreArchivo(nombre);
   const dl = window.claude && typeof claude.use === 'function' ? await claude.use('downloads') : null;
-  if (!dl) return copiar(contenido, 'No se pudo abrir la descarga; el contenido quedó copiado al portapapeles.');
+  if (!dl) return descargarNavegador(base + '.csv', contenido);
   try {
     await dl.save({ filename: base + '.csv', data: contenido });
     aviso('Archivo guardado.');
@@ -1022,6 +1825,20 @@ async function descargar(clave) {
         aviso('Guardado como .txt — en Excel: Datos › Obtener datos › Desde texto, separador punto y coma.');
       } catch (e2) { fallo(e2, contenido); }
     } else fallo(e, contenido);
+  }
+}
+
+/** Descarga normal del navegador (GitHub Pages, Vercel, archivo local). */
+function descargarNavegador(nombre, contenido) {
+  try {
+    const url = URL.createObjectURL(new Blob([contenido], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = nombre;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    aviso('Descargado: ' + nombre);
+  } catch (e) {
+    copiar(contenido, 'No se pudo descargar; el contenido quedó copiado al portapapeles.');
   }
 }
 
@@ -1049,35 +1866,233 @@ function aviso(t) {
 function init() {
   const drop = $('#drop'), input = $('#file');
   $('#btnElegir').onclick = () => input.click();
-  $('#btnOtro').onclick = () => input.click();
-  input.onchange = () => input.files[0] && cargar(input.files[0]);
-  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-  drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) cargar(f); });
+  input.onchange = () => { if (input.files[0]) cargar(input.files[0]); input.value = ''; };
+
+  // se puede soltar el archivo en cualquier parte de la página
+  let arrastres = 0;
+  const conArchivo = e => e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files');
+  document.addEventListener('dragenter', e => { if (!conArchivo(e)) return; e.preventDefault(); arrastres++; $('#soltar').hidden = false; drop.classList.add('over'); });
+  document.addEventListener('dragover', e => { if (conArchivo(e)) e.preventDefault(); });
+  document.addEventListener('dragleave', () => { if (--arrastres <= 0) { arrastres = 0; $('#soltar').hidden = true; drop.classList.remove('over'); } });
+  document.addEventListener('drop', e => {
+    if (!conArchivo(e)) return;
+    e.preventDefault();
+    arrastres = 0; $('#soltar').hidden = true; drop.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f) cargar(f);
+  });
 
   $('#umbral').oninput = e => { const v = parseFloat(e.target.value); if (isFinite(v)) { OPTS.umbral = v; recalcular(); } };
   $('#sinRegistroCuenta').onchange = e => { OPTS.sinRegistroCuenta = !e.target.checked; recalcular(); };
-  $('#soloPierden').onchange = e => { soloPierden = e.target.checked; pintarEstudiantes(); };
-  $('#soloSinRegistro').onchange = e => { soloSinRegistro = e.target.checked; pintarEstudiantes(); };
-  $('#buscar').oninput = e => { busqueda = e.target.value.trim(); pintarEstudiantes(); };
+  $('#soloPierden').onchange = e => { soloPierden = e.target.checked; if (RES) pintarEstudiantes(); };
+  $('#soloSinRegistro').onchange = e => { soloSinRegistro = e.target.checked; if (RES) pintarEstudiantes(); };
+  $('#buscar').oninput = e => { busqueda = e.target.value.trim(); if (RES) pintarEstudiantes(); };
+  $('#vizMetrica').onchange = e => { vizMetrica = e.target.value || 'promedio'; if (RES) pintarGraficos(); };
   $('#toggleOpciones').onclick = () => {
     const d = $('#panelOpciones');
     d.hidden = !d.hidden;
     $('#toggleOpciones').setAttribute('aria-expanded', String(!d.hidden));
-    $('#toggleOpciones').textContent = d.hidden ? 'Opciones avanzadas' : 'Ocultar opciones';
+    $('#toggleOpciones').textContent = d.hidden ? 'Ajustes' : 'Cerrar ajustes';
   };
   $('#btnImprimir').onclick = () => {
+    const app = $('#app');
+    app.classList.add('imprimir-lista');
     try { window.print(); }
-    catch { aviso('Tu navegador bloqueó la impresión acá. Descargá la lista en «Descargar e imprimir» y abrila en Excel.'); }
+    catch { aviso('Tu navegador bloqueó la impresión acá. Descargá la lista en «Descargas» y abrila en Excel.'); }
+    finally { app.classList.remove('imprimir-lista'); }
   };
+  $$('[data-export]').forEach(b => b.onclick = () => RES && descargar(b.dataset.export));
 
-  $$('.tabbar button').forEach(b => b.onclick = () => {
-    $$('.tabbar button').forEach(x => x.classList.toggle('on', x === b));
-    $$('.panel').forEach(p => { p.hidden = p.id !== 'panel-' + b.dataset.tab; });
+  // los gráficos se dibujan al ancho de su contenedor: se rehacen al cambiar el tamaño de la ventana
+  let rT;
+  window.addEventListener('resize', () => {
+    clearTimeout(rT);
+    rT = setTimeout(() => { if (RES) pintarGraficos(); }, 150);
   });
-  $$('[data-export]').forEach(b => b.onclick = () => descargar(b.dataset.export));
+
+  $('#velo').onclick = cerrarFicha;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && estSel && esMovil()) cerrarFicha(); });
+  window.addEventListener('scroll', () => tipOcultar(), { passive: true });
+
+  pintarVacio();
+  guiaInit();
 }
 
 document.addEventListener('DOMContentLoaded', init);
 
+/* ============================================================================
+   Guía de bienvenida: pregunta al entrar si se quiere un recorrido y, paso a
+   paso, resalta cada parte de la página con un recuadro y una explicación.
+   El primer paso ofrece un consolidado de EJEMPLO (estudiantes ficticios,
+   generado por src/ejemplo.py) para practicar descargarlo y cargarlo.
+   ==========================================================================*/
+
+const GUIA_CLAVE = 'notas.guiaVista';
+const EJEMPLO_NOMBRE = 'consolidado-ejemplo-901.xlsx';
+const guia = { activa: false, paso: 0, raf: 0 };
+
+const PASOS = [
+  {
+    sel: '#drop', titulo: 'Cargá el archivo',
+    texto: () => RES
+      ? (esEjemplo() ? '¡Listo! Ya podés ver la página con datos.' : 'Ya hay un archivo cargado.')
+      : 'Descargá el ejemplo y cargalo acá con <b>Cargar consolidado</b>.',
+    extra: () => RES ? '' :
+      `<div class="guiaAcciones"><button class="btn sm" data-guia="descargar">Descargar ejemplo</button>
+       <button class="link" data-guia="cargarYa">Cargarlo por mí</button></div>`,
+  },
+  { sel: '.barra', titulo: 'Periodo', texto: () => 'Elegí el periodo que querés ver.' },
+  { sel: '#sec-resumen', titulo: 'Resumen', texto: () => 'Las cifras más importantes del periodo.' },
+  { sel: '#sec-estudiantes', titulo: 'Quiénes pierden', texto: () => 'Cada estudiante y lo que pierde. <span class="neg">Rojo</span>: pierde. <span class="mid">Naranja</span>: nota sin registrar.' },
+  { sel: '#sec-asignaturas', titulo: 'Dónde se pierde más', texto: () => 'Tocá una barra para ver quiénes pierden esa asignatura.' },
+  { sel: '#sec-graficos', titulo: 'Evolución', texto: () => 'Cómo le va a cada estudiante en el tiempo. Tocá un punto para ver su ficha.' },
+  { sel: '#sec-descargas', titulo: 'Descargas', texto: () => 'Listados para Excel. El primero sirve para las actas.' },
+  { sel: '#sec-archivo', titulo: 'Más detalles', texto: () => 'Información extra. Se abre con el <b>+</b>.' },
+  { sel: '#toggleOpciones', titulo: 'Ajustes', texto: () => 'Nota mínima y pesos de las asignaturas.' },
+  { sel: '#btnGuia', titulo: '¡Listo!', texto: () => 'Ahora cargá tu archivo real. La guía queda en este botón.' },
+];
+
+/** El ejemplo se reconoce por el nombre aunque el navegador le agregue « (1)» al descargarlo de nuevo. */
+const esEjemplo = () => /consolidado-ejemplo-901/i.test(ARCHIVO);
+
+/* ---------- inicio ---------- */
+
+function guiaVista() { try { return localStorage.getItem(GUIA_CLAVE) === '1'; } catch { return false; } }
+function guiaMarcar() { try { localStorage.setItem(GUIA_CLAVE, '1'); } catch { /* sin almacenamiento */ } }
+
+function guiaInit() {
+  $('#btnGuia').onclick = () => guiaEmpezar();
+  $('#guiaSi').onclick = () => { guiaMarcar(); $('#guiaModal').hidden = true; guiaEmpezar(); };
+  $('#guiaNo').onclick = () => { guiaMarcar(); $('#guiaModal').hidden = true; aviso('Podés abrir la guía cuando quieras con el botón «Guía».'); };
+  $('#guiaPop').onclick = e => {
+    const b = e.target.closest('[data-guia]');
+    if (!b) return;
+    const a = b.dataset.guia;
+    if (a === 'sig') guiaIr(guia.paso + 1);
+    else if (a === 'ant') guiaIr(guia.paso - 1);
+    else if (a === 'salir') guiaSalir();
+    else if (a === 'descargar') descargarEjemplo();
+    else if (a === 'cargarYa') cargar(archivoEjemplo());
+  };
+  if (!guiaVista()) $('#guiaModal').hidden = false;
+}
+
+function guiaEmpezar() {
+  guia.activa = true;
+  $('#guiaFoco').hidden = false;
+  $('#guiaPop').hidden = false;
+  document.addEventListener('keydown', guiaTeclas);
+  window.addEventListener('scroll', guiaReubicar, { passive: true });
+  window.addEventListener('resize', guiaReubicar);
+  guiaIr(0);
+}
+
+function guiaSalir() {
+  guia.activa = false;
+  $('#guiaFoco').hidden = true;
+  $('#guiaPop').hidden = true;
+  document.removeEventListener('keydown', guiaTeclas);
+  window.removeEventListener('scroll', guiaReubicar);
+  window.removeEventListener('resize', guiaReubicar);
+}
+
+function guiaTeclas(e) {
+  if (e.key === 'Escape') guiaSalir();
+  else if (e.key === 'ArrowRight') guiaIr(guia.paso + 1);
+  else if (e.key === 'ArrowLeft') guiaIr(guia.paso - 1);
+}
+
+/** Lo llama pintar(): si la guía espera en el paso de carga, avanza sola al cargar un archivo. */
+function guiaTrasCargar() {
+  if (guia.activa && guia.paso === 0) setTimeout(() => guiaIr(0), 50);
+}
+
+/* ---------- pasos ---------- */
+
+function guiaIr(n) {
+  if (n < 0) return;
+  if (n >= PASOS.length) { guiaSalir(); return; }
+  guia.paso = n;
+  $('#toast').hidden = true;   // un aviso viejo no debe tapar los botones de la guía
+  const paso = PASOS[n], el = $(paso.sel);
+  const ultimo = n === PASOS.length - 1;
+  $('#guiaPop').innerHTML = `
+    <div class="guiaN">Paso ${n + 1} de ${PASOS.length}</div>
+    <h3>${paso.titulo}</h3>
+    <p>${paso.texto()}</p>
+    ${paso.extra ? paso.extra() : ''}
+    <div class="guiaNav">
+      <button class="link" data-guia="salir">Salir de la guía</button>
+      <span>${n ? '<button class="btn ghost sm" data-guia="ant">Anterior</button>' : ''}
+        <button class="btn sm" data-guia="sig">${ultimo ? 'Terminar' : n === 0 && !RES ? 'Seguir sin cargar' : 'Siguiente'}</button></span>
+    </div>`;
+  // las secciones largas se muestran desde arriba; las cortas, centradas
+  const alto = el.getBoundingClientRect().height;
+  el.scrollIntoView({ block: alto > window.innerHeight * 0.6 ? 'start' : 'center', behavior: 'smooth' });
+  guiaReubicar();
+  setTimeout(guiaReubicar, 350);
+  setTimeout(guiaReubicar, 700);
+  const sig = $('#guiaPop').querySelector('[data-guia="sig"]');
+  if (sig) sig.focus({ preventScroll: true });
+}
+
+function guiaReubicar() {
+  if (!guia.activa) return;
+  cancelAnimationFrame(guia.raf);
+  guia.raf = requestAnimationFrame(() => {
+    const el = $(PASOS[guia.paso].sel);
+    const vw = window.innerWidth, vh = window.innerHeight, m = 8;
+    const r = el.getBoundingClientRect();
+    const pop = $('#guiaPop'), pr = pop.getBoundingClientRect();
+    const pw = pr.width, ph = pr.height, gap = 14;
+    // el recuadro se recorta a la parte visible del elemento; si es muy alto, se corta para
+    // que la explicación quepa debajo sin taparlo
+    const top = Math.max(m, r.top - m);
+    let bottom = Math.min(vh - m, r.bottom + m);
+    const tope = vh - ph - gap - m;
+    if (bottom > tope && top + 120 < tope && !(top - gap - ph > m)) bottom = tope;
+    const left = Math.max(m, r.left - m), right = Math.min(vw - m, r.right + m);
+    const foco = $('#guiaFoco');
+    Object.assign(foco.style, { top: top + 'px', left: left + 'px', width: Math.max(0, right - left) + 'px', height: Math.max(0, bottom - top) + 'px' });
+
+    let y;
+    if (bottom + gap + ph < vh - m) y = bottom + gap;            // debajo
+    else if (top - gap - ph > m) y = top - gap - ph;              // encima
+    else y = vh - ph - 16;                                        // sobre el elemento, abajo de la pantalla
+    let x = Math.min(Math.max(m, left), vw - pw - m);
+    if (vw < 620) x = (vw - pw) / 2;
+    pop.style.top = Math.max(m, y) + 'px';
+    pop.style.left = x + 'px';
+  });
+}
+
+/* ---------- archivo de ejemplo ---------- */
+
+function bytesEjemplo() {
+  const bin = atob(EJEMPLO_XLSX.trim());
+  const u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return u8;
+}
+
+function archivoEjemplo() {
+  const u8 = bytesEjemplo();
+  return { name: EJEMPLO_NOMBRE, size: u8.length, arrayBuffer: async () => u8.buffer.slice(0) };
+}
+
+function descargarEjemplo() {
+  try {
+    const url = URL.createObjectURL(new Blob([bytesEjemplo()], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = EJEMPLO_NOMBRE;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    aviso(`Descargado. Ahora tocá «${RES ? 'Cambiar archivo' : 'Cargar consolidado'}» y elegilo.`);
+  } catch {
+    aviso('No se pudo descargar el ejemplo. Probá con «Cargarlo por mí».');
+  }
+}
+
 </script>
+</body>
+</html>

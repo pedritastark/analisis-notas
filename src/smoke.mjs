@@ -1,5 +1,10 @@
+// Uso: node src/smoke.mjs [ruta/al/consolidado.xlsx]   (antes: python3 src/build.py)
 import { readFileSync } from 'fs';
-const html = readFileSync('app.html','utf8');
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+const AQUI = dirname(fileURLToPath(import.meta.url));
+const html = readFileSync(resolve(AQUI, '../index.html'),'utf8');
+const XLSX = process.argv[2] || process.env.CONSOLIDADO || resolve(AQUI, '../../Consolidado por periodo  602.xlsx');
 const js = html.split('<script>')[1].split('</script>')[0];
 
 // ids y clases que existen en el marcado
@@ -28,26 +33,32 @@ const doc = {
   addEventListener: (ev,fn)=>{ if(ev==='DOMContentLoaded') doc._ready=fn; },
 };
 globalThis.document = doc;
-globalThis.window = { claude: undefined };
+globalThis.window = { claude: undefined, addEventListener(){}, innerWidth: 1200, innerHeight: 800 };
 Object.defineProperty(globalThis,'navigator',{value:{clipboard:{writeText:async()=>{}}},configurable:true});
 
 globalThis.Blob = (await import('buffer')).Blob;
 
-const scope = new Function(js + '\n; return {init, cargar, descargar, get RES(){return RES}, pintarEstudiantes, pintarPesos};')();
+const scope = new Function(js + '\n; return {init, cargar, descargar, archivoEjemplo, get RES(){return RES}, get ARCHIVO(){return ARCHIVO}, pintarEstudiantes, pintarPesos};')();
 scope.init();
 doc._ready && doc._ready();
+
+// antes de cargar: espacios reservados en todo el tablero
+console.log('vacío → saludo:', store.get('saludo').textContent, '| kpis reservados:', (store.get('kpis').innerHTML.match(/v ph/g)||[]).length,
+  '| líneas fantasma:', /class="ghost"/.test(store.get('chLineas').innerHTML), '| fichas esqueleto:', (store.get('contEst').innerHTML.match(/<article/g)||[]).length);
 
 // panel de paneles: verificar que cada data-tab tenga su panel
 for (const m of html.matchAll(/data-tab="([^"]+)"/g))
   if (!ids.has('panel-'+m[1])) throw new Error('Falta el panel: panel-'+m[1]);
 
-const buf = readFileSync('/Users/sebastianpedraza/Analisis-notas/Consolidado por periodo  602.xlsx');
-const file = { name:'Consolidado por periodo  602.xlsx', arrayBuffer: async()=>buf.buffer.slice(buf.byteOffset, buf.byteOffset+buf.byteLength) };
+const buf = readFileSync(XLSX);
+const file = { name: XLSX.split('/').pop(), size: buf.length, arrayBuffer: async()=>buf.buffer.slice(buf.byteOffset, buf.byteOffset+buf.byteLength) };
 await scope.cargar(file);
 
 const msg = store.get('msg');
 if (msg && msg.className.includes('err')) throw new Error('La app reportó error: '+msg.textContent);
 console.log('subtitulo:', store.get('subtitulo').textContent);
+console.log('bienvenida:', store.get('bienvenida').innerHTML.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
+console.log('zona de carga:', store.get('cargaTit').textContent, '|', store.get('cargaSub').textContent);
 console.log('kpis renderizados:', (store.get('kpis').innerHTML.match(/class="kpi"/g)||[]).length);
 console.log('filas tabla áreas:', (store.get('tablaAreas').innerHTML.match(/<tr>/g)||[]).length);
 console.log('fichas estudiante:', (store.get('contEst').innerHTML.match(/<article/g)||[]).length, '|', store.get('contadorEst').textContent);
@@ -86,3 +97,35 @@ el('soloPierden').onchange({ target: { checked: true } });
 console.log('   solo quienes pierden:', el('contadorEst').textContent);
 el('buscar').oninput({ target: { value: 'lopez' } });
 console.log('   + búsqueda "lopez":', el('contadorEst').textContent);
+
+// --- gráficos y archivo ---
+const roto = s => /undefined|NaN|\[object/.test(s);
+console.log('\n== Gráficos ==');
+el('buscar').oninput({ target: { value: '' } });
+const lineas = el('chLineas').innerHTML, barras = el('chBarras').innerHTML, calor = el('chCalor').innerHTML;
+console.log('   líneas: svg', /<svg/.test(lineas), '| trazos', (lineas.match(/class="ln /g)||[]).length,
+            '| puntos', (lineas.match(/class="pt /g)||[]).length, '| en riesgo', (lineas.match(/class="ln risk"/g)||[]).length);
+console.log('   barras de asignatura:', (barras.match(/class="bar"/g)||[]).length);
+console.log('   filas del mapa de calor:', (calor.match(/class="hrow/g)||[]).length);
+console.log('   opciones de nota:', (el('vizMetrica').innerHTML.match(/<option/g)||[]).length);
+console.log('   ¿gráficos sin marcadores rotos?', !roto(lineas + barras + calor + el('leyLineas').innerHTML));
+el('vizMetrica').onchange({ target: { value: scope.RES.campos[0].nombre } });
+console.log('   métrica por área →', (el('chLineas').innerHTML.match(/class="ln risk"/g)||[]).length, 'en riesgo');
+el('vizMetrica').onchange({ target: { value: 'promedio' } });
+
+console.log('== Archivo y ponderación ==');
+const comp = el('composicion').innerHTML, prev = el('vistaPrevia').innerHTML;
+console.log('   bloques de área:', (comp.match(/class="comp"/g)||[]).length, '| asignaturas corregidas:', (comp.match(/compFila fix/g)||[]).length);
+console.log('   vista previa: filas', (prev.match(/<tr/g)||[]).length, '| fila de pesos marcada', /class="fPeso"/.test(prev));
+console.log('   hojas:', (el('hojasPrev').innerHTML.match(/data-h=/g)||[]).length, '| info:', !roto(el('infoArchivo').innerHTML));
+console.log('   ¿sin marcadores rotos?', !roto(comp + prev));
+
+// --- guía y consolidado de ejemplo (ficticio, incrustado en index.html) ---
+console.log('\n== Guía y ejemplo ==');
+console.log('   pregunta de la guía visible al entrar:', store.get('guiaModal').hidden === false);
+await scope.cargar(scope.archivoEjemplo());
+const R = scope.RES;
+const nAsig = R.campos.reduce((s, k) => s + k.asigs.length, 0);
+console.log('   ejemplo cargado:', scope.ARCHIVO, '| estudiantes', R.estudiantes.length, '| asignaturas', nAsig,
+            '| periodos', R.periodos.map(p => p.hoja + ' ' + p.digitadas + '/' + p.totalAsigs).join(', '), '| descartadas', R.vacias.length);
+if (nAsig !== 18 || R.estudiantes.length !== 30) throw new Error('El ejemplo no se leyó completo (¿celdas vacías <c .../> mal parseadas?)');
